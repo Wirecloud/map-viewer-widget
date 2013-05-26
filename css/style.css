@@ -1,0 +1,24 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    height: 100%;
+}
+
+body {
+    height: 100%;
+    margin: 0px;
+    padding: 0px;
+}
+
+#map_canvas {
+    height: 100%;
+}
+
+#error {
+    position: absolute;
+    top: 27px;
+    left: 80px;
+}
