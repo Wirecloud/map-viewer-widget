@@ -5,9 +5,9 @@
         <Name>MapViewer</Name>
         <DisplayName>Map Viewer</DisplayName>
         <Version>2.5.0</Version>
-	    <Author>sblanco, jserrano</Author>
+        <Author>sblanco, jserrano</Author>
         <Mail>sblanco@conwet.com, jserrano@conwet.com</Mail>
-        <Description>Place things on map! Explore the world, trace routes... Don't carry a paper map again...</Description>
+        <Description>Place things on map! Explore the world, trace routes...</Description>
         <ImageURI>images/catalogue.png</ImageURI>
         <iPhoneImageURI>images/cataloguePhone.png</iPhoneImageURI>
         <WikiURI>http://conwet.fi.upm.es/docs/display/wirecloud/Map+Viewer</WikiURI>
