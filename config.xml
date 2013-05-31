@@ -18,7 +18,7 @@
             type="text"
             description="When you click in a mark you will see a circle with this radius"
             label="Mark shadow radius"
-            default="1000">
+            default="10">
         </Preference>
         <Preference
             name="centerPreference"
