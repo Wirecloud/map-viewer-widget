@@ -71,7 +71,7 @@
 
         this.poi = poi;
 
-        if (poi.currentLocation.lat && poi.currentLocation.lng){
+        if (poi.currentLocation && poi.currentLocation.lat && poi.currentLocation.lng){
             lat = parseFloat(poi.currentLocation.lat);
             lng = parseFloat(poi.currentLocation.lng);
             if (poi.currentLocation.system == "UTM") {

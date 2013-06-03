@@ -35,6 +35,7 @@
         MashupPlatform.wiring.registerCallback("poiInput", handlerInputPoi.bind(this));
         MashupPlatform.wiring.registerCallback("deletePoiInput", handlerInputDeletePoi.bind(this));
         MashupPlatform.wiring.registerCallback("poiInputCenter", handlerInputPoiCenter.bind(this));
+        MashupPlatform.wiring.registerCallback("selectPoiInput", handlerInputSelectPoi.bind(this));
 
         // Preferences callback:
         MashupPlatform.prefs.registerCallback(handlerPreferences.bind(this));
@@ -195,6 +196,13 @@
         var position = poi.getDecimalCoords();
         var googleCoords = new google.maps.LatLng(position.lat, position.lng);
         this.map.setCenter(googleCoords);
+        this.map.setZoom(this.zoom);
+    };
+
+    var handlerInputSelectPoi = function handlerInputSelectPoi(poiString) {
+        var poi = new Poi(JSON.parse(poiString));
+        this.mapPoiManager.selectPoi(poi);
+        this.mapPoiManager.centerMap(poi);
         this.map.setZoom(this.zoom);
     };
 

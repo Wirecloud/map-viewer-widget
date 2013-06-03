@@ -4,7 +4,7 @@
         <Vendor>CoNWeT</Vendor>
         <Name>MapViewer</Name>
         <DisplayName>Map Viewer</DisplayName>
-        <Version>2.5.0</Version>
+        <Version>2.5.2</Version>
         <Author>sblanco, jserrano</Author>
         <Mail>sblanco@conwet.com, jserrano@conwet.com</Mail>
         <Description>Place things on map! Explore the world, trace routes...</Description>
@@ -86,6 +86,13 @@
             description="Insert or update a PoI and change the viewport centering the map on it"
             label="Insert/Update Centered PoI"
             action_label="Map Viewer Centered PoI"
+            friendcode="poi"/>
+        <InputEndpoint
+            name="selectPoiInput"
+            type="text"
+            description="Select a PoI and change the viewport centering the map on it"
+            label="Select PoI"
+            action_label="Map Viewer Select PoI"
             friendcode="poi"/>
         <OutputEndpoint
             name="routeDescriptionOutput"

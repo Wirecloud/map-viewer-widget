@@ -55,7 +55,6 @@
     };
 
     MapPoiManager.prototype.selectPoi = function selectPoi (poi) {
-        // if there is an activePoi then
         if (this.activePoi) {
             if (this.activePoi !== poi.getId()) {
                 deactivatePoi.call(this, this.activePoi);
@@ -70,8 +69,10 @@
 
     MapPoiManager.prototype.centerMap = function centerMap (poi) {
         var poiId = poi.getId();
-        var center = this.poiList[poiId].getPosition();
-        this.map.setCenter(center);
+        if (poiId in this.poiList) {
+            var center = this.poiList[poiId].getPosition();
+            this.map.setCenter(center);
+        }
     };
 
     MapPoiManager.prototype.getPoiList = function getPoiList () {
