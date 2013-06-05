@@ -48,7 +48,8 @@
         this.map = null;
         this.center = {};
         this.radius = 0;
-        this.zoom = 11;
+        this.mapZoom = 11;
+        this.preferenceZoom = 17;
 
         this.currentViewportPoiList = {};
         // this.activeOverlayPoi = null;     // poi that has active overlays
@@ -95,7 +96,7 @@
     MapViewer.prototype.createMap = function createMap () {
         // set options to see an hybrid map with zoom enougth center in somewhere:
         this.mapOptions = {
-            zoom: this.zoom,
+            zoom: this.mapZoom,
             center: new google.maps.LatLng(0, 0),
             mapTypeId: google.maps.MapTypeId.ROADMAP
         };
@@ -121,30 +122,39 @@
 
 /******************************** Input Handlers *****************************/
 
-    var handlerInputRoute = function handlerInputRoute (route) {
-        /*  route examples:
-         *      "from: Madrid To: Sevilla"
-         *      "from: 44, 3 To: 44, 4"
+    var handlerInputRoute = function handlerInputRoute (fromToString) {
+        /*  route example:
+         *      {
+         *          from: "iss33"
+         *          to: "tech12"
+         *      }
          * */
-        if (route.search("[fF]rom:") > -1 && route.search("[Tt]o:") > -1) {
-            var originDestination = route.toLocaleLowerCase().split("from:")[1].split("to:");
+        var fromToIds = JSON.parse(fromToString);
+        if (fromToIds.from && fromToIds.to) {
+            var route = this.mapPoiManager.getRoute(fromToIds.from, fromToIds.to);
+            if (route) {
+                var request = {
+                    origin: new google.maps.LatLng(route.from.lat, route.from.lng),
+                    destination: new google.maps.LatLng(route.to.lat, route.from.lng),
+                    travelMode: this.travelMode
+                };
 
-            var request = {
-                origin: originDestination[0].trim(),
-                destination: originDestination[1].trim(),
-                travelMode: this.travelMode
-            };
-
-            this.directionsService.route(request, function (response, status) {
-                if (status == google.maps.DirectionsStatus.OK) {
-                    this.directionsDisplay.setDirections(response);
-                    this.activeRoute.route = response.routes[0];
-                    if (this.activeRoute.stepInfoWindow) {
-                        this.activeRoute.stepInfoWindow.close();
+                this.directionsService.route(request, function (response, status) {
+                    if (status == google.maps.DirectionsStatus.OK) {
+                        this.directionsDisplay.setDirections(response);
+                        this.activeRoute.route = response.routes[0];
+                        if (this.activeRoute.stepInfoWindow) {
+                            this.activeRoute.stepInfoWindow.close();
+                        }
+                        MashupPlatform.wiring.pushEvent("routeDescriptionOutput", response.routes);
                     }
-                    MashupPlatform.wiring.pushEvent("routeDescriptionOutput", response.routes);
-                }
-            }.bind(this));
+                }.bind(this));
+            } else {
+                this.directionsDisplay.setDirections({routes:[]});
+            }
+        } else {
+            // Delete Route
+            this.directionsDisplay.setDirections({routes:[]});
         }
     };
 
@@ -196,14 +206,14 @@
         var position = poi.getDecimalCoords();
         var googleCoords = new google.maps.LatLng(position.lat, position.lng);
         this.map.setCenter(googleCoords);
-        this.map.setZoom(this.zoom);
+        this.map.setZoom(this.preferenceZoom);
     };
 
     var handlerInputSelectPoi = function handlerInputSelectPoi(poiString) {
         var poi = new Poi(JSON.parse(poiString));
         this.mapPoiManager.selectPoi(poi);
         this.mapPoiManager.centerMap(poi);
-        this.map.setZoom(this.zoom);
+        this.map.setZoom(this.preferenceZoom);
     };
 
 /**************************** Preference Handler *****************************/
@@ -298,15 +308,15 @@
     };
 
     var setZoomPreference = function setZoomPreference(zoom) {
-        this.zoom = parseInt(zoom, 10);
-        if(this.zoom < 1){
-            this.zoom = 1;
+        this.preferenceZoom = parseInt(zoom, 10);
+        if(this.preferenceZoom < 1){
+            this.preferenceZoom = 1;
         }
-        else if(this.zoom > 22){
-            this.zoom = 22;
+        else if(this.preferenceZoom > 22){
+            this.preferenceZoom = 22;
         }
         if (this.map) {
-            this.map.setZoom(this.zoom);
+            this.map.setZoom(this.preferenceZoom);
         }
     };
 

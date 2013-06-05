@@ -18,7 +18,7 @@
  */
 
 /*jshint browser:true*/
-/*global MapOverlay MarkerClusterer*/
+/*global MapOverlay MarkerClusterer google*/
 
 (function(){
 
@@ -71,7 +71,17 @@
         var poiId = poi.getId();
         if (poiId in this.poiList) {
             var center = this.poiList[poiId].getPosition();
-            this.map.setCenter(center);
+            var googleCoords = new google.maps.LatLng(center.lat, center.lng);
+            this.map.setCenter(googleCoords);
+        }
+    };
+
+    MapPoiManager.prototype.getRoute = function getRoute (poiFromId, poiToId) {
+        if (poiFromId in this.poiList && poiToId in this.poiList) {
+        return {
+                from: this.poiList[poiFromId].getPosition(),
+                to: this.poiList[poiToId].getPosition()
+            };
         }
     };
 

@@ -31,7 +31,7 @@
     var MapOverlay = function MapOverlay(map, markerClusterer, poi, radius) {
 
         if (!map || !poi || !radius) {
-            throw TypeError("Map, poi and radius parameters are required.");
+            throw new TypeError("Map, poi and radius parameters are required.");
         }
 
         this.map = map;
@@ -99,6 +99,11 @@
         this.marker.setMap(null);
         
     };
+
+    MapOverlay.prototype.getPosition = function getPosition () {
+        return this.position;
+    };
+
 /******************************************************************************/
 /********************************* PRIVATE ************************************/
 /******************************************************************************/
