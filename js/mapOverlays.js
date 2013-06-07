@@ -176,6 +176,7 @@
         this.marker.setMap(null);
         this.marker.setAnimation(null);
         this.marker.setPosition(googlePosition);
+        this.marker.setIcon(this.icon);
         this.marker.setMap(this.map);
     };
 
