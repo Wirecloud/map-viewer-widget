@@ -135,7 +135,7 @@
             if (route) {
                 var request = {
                     origin: new google.maps.LatLng(route.from.lat, route.from.lng),
-                    destination: new google.maps.LatLng(route.to.lat, route.from.lng),
+                    destination: new google.maps.LatLng(route.to.lat, route.to.lng),
                     travelMode: this.travelMode
                 };
 
