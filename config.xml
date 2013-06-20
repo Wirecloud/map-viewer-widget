@@ -2,11 +2,11 @@
 <Template xmlns="http://wirecloud.conwet.fi.upm.es/ns/template#">
     <Catalog.ResourceDescription>
         <Vendor>CoNWeT</Vendor>
-        <Name>MapViewer</Name>
+        <Name>map-viewer</Name>
         <DisplayName>Map Viewer</DisplayName>
-        <Version>2.5.2</Version>
-        <Author>sblanco, jserrano</Author>
-        <Mail>sblanco@conwet.com, jserrano@conwet.com</Mail>
+        <Version>2.5.3</Version>
+        <Author>sblanco</Author>
+        <Mail>sblanco@conwet.com</Mail>
         <Description>Place things on map! Explore the world, trace routes...</Description>
         <ImageURI>images/catalogue.png</ImageURI>
         <iPhoneImageURI>images/cataloguePhone.png</iPhoneImageURI>
@@ -149,9 +149,14 @@
             action_label="MapViewer: Change Bounds of Viewport"
             friendcode="viewport"/>
     </Platform.Wiring>
-    <Platform.Context></Platform.Context>
+
     <Platform.Link>
-        <XHTML href="index.html" contenttype="text/html" cacheable="false" use-platform-style="false"/>
+        <XHTML
+            href="index.html"
+            contenttype="text/html"
+            cacheable="false"
+            use-platform-style="false"/>
     </Platform.Link>
+
     <Platform.Rendering width="7" height="50"/>
 </Template>
