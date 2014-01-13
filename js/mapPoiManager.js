@@ -89,6 +89,24 @@
         return this.poiList;
     };
 
+    MapPoiManager.prototype.insertPoiList = function insertPoiList(poiList, handler) {
+        var poi = {};
+        for (var i = 0; i < poiList.length; i++) {
+            poi = new Poi(poiList[i]);
+            addPoi.call(this, poi, handler.bind(handler, poi));
+        }
+    };
+
+    MapPoiManager.prototype.deletePoiList = function deletePoiList() {
+        var poi;
+
+        for (var poiId in this.poiList) {
+            this.poiList[poiId].destroy();
+            this.poiList[poiId] = null;
+            delete this.poiList[poiId];
+        }
+    };
+
     MapPoiManager.prototype.getStringPoiList = function getPoiList () {
         return JSON.stringify(this.poiList);
     };

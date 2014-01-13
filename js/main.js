@@ -33,9 +33,11 @@
         MashupPlatform.wiring.registerCallback("addressInput", handlerInputAddress.bind(this));
         MashupPlatform.wiring.registerCallback("coordsInput", handlerInputCoords.bind(this));
         MashupPlatform.wiring.registerCallback("poiInput", handlerInputPoi.bind(this));
+        MashupPlatform.wiring.registerCallback("poiListInput", handlerInputListPoi.bind(this));
         MashupPlatform.wiring.registerCallback("deletePoiInput", handlerInputDeletePoi.bind(this));
         MashupPlatform.wiring.registerCallback("poiInputCenter", handlerInputPoiCenter.bind(this));
         MashupPlatform.wiring.registerCallback("selectPoiInput", handlerInputSelectPoi.bind(this));
+        MashupPlatform.wiring.registerCallback("changeStatus", handlerInputChangeStatus.bind(this));
 
         // Preferences callback:
         MashupPlatform.prefs.registerCallback(handlerPreferences.bind(this));
@@ -193,6 +195,12 @@
         sendPoiList.call(this);
     };
 
+    var handlerInputListPoi = function handlerInputListPoi(poiListString) {
+        var poiList = JSON.parse(poiListString);
+        this.mapPoiManager.deletePoiList();
+        this.mapPoiManager.insertPoiList(poiList, handlerClickMarkerPoi.bind(this));
+    };
+
     var handlerInputDeletePoi = function handlerInputDeletePoi (poiString) {
         var poi = new Poi(JSON.parse(poiString));
         this.mapPoiManager.removePoi(poi);
@@ -214,6 +222,24 @@
         this.mapPoiManager.selectPoi(poi);
         this.mapPoiManager.centerMap(poi);
         this.map.setZoom(this.preferenceZoom);
+    };
+
+    var handlerInputChangeStatus = function handlerInputChangeStatus(newStatus) {
+        var status = JSON.parse(newStatus);
+        var poiList = this.mapPoiManager.getPoiList();
+        for (var key in poiList) {
+            var poi = poiList[key].poi;
+            for (var i = 0; i < status.length; i++) {
+                if (poi.poi.id === status[i].uri) {
+                    if (status[i].open_close === "1") {
+                        poi.poi.icon = poi.poi.icon.replace("close", "open");
+                    } else {
+                        poi.poi.icon = poi.poi.icon.replace("open", "close");
+                    }
+                    this.mapPoiManager.insertPoi(poi, handlerClickMarkerPoi.bind(this, poi));
+                }
+            }
+        }
     };
 
 /**************************** Preference Handler *****************************/

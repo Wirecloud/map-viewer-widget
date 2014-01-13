@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Template xmlns="http://wirecloud.conwet.fi.upm.es/ns/template#">
     <Catalog.ResourceDescription>
-        <Vendor>CoNWeT</Vendor>
+        <Vendor>COM</Vendor>
         <Name>map-viewer</Name>
         <DisplayName>Map Viewer</DisplayName>
-        <Version>2.5.3</Version>
+        <Version>2.5.7</Version>
         <Author>sblanco</Author>
-        <Mail>sblanco@conwet.com</Mail>
+        <Mail>sblanco@centeropenmiddleware.com</Mail>
         <Description>Place things on map! Explore the world, trace routes...</Description>
         <ImageURI>images/catalogue.png</ImageURI>
         <iPhoneImageURI>images/cataloguePhone.png</iPhoneImageURI>
@@ -88,12 +88,26 @@
             action_label="Map Viewer Centered PoI"
             friendcode="poi"/>
         <InputEndpoint
+            name="poiListInput"
+            type="text"
+            description="Update a PoI List in order to view just this PoI List."
+            label="Update PoI List"
+            action_label="Map Viewer"
+            friendcode="poiList"/>
+        <InputEndpoint
             name="selectPoiInput"
             type="text"
             description="Select a PoI and change the viewport centering the map on it"
             label="Select PoI"
             action_label="Map Viewer Select PoI"
             friendcode="poi"/>
+        <InputEndpoint
+            name="changeStatus"
+            type="text"
+            description=""
+            label="Change Status"
+            action_label="Map Viewer Select PoI"
+            friendcode="changeestablishstate"/>
         <OutputEndpoint
             name="routeDescriptionOutput"
             type="text"
@@ -111,42 +125,36 @@
             type="text"
             description="Address of a Google Map marker."
             label="Address"
-            action_label="Address"
             friendcode="address"/>
         <OutputEndpoint
             name="utmCoordOutput"
             type="text"
             description="UTM X, Y coordinates that is displayed in the map."
             label="UTM Coordinates"
-            action_label="UTM Coordinates"
             friendcode="utmCoord"/>
         <OutputEndpoint
             name="decimalCoordOutput"
             type="text"
             description="Decimal X, Y coordinates that is displayed in the map."
             label="Decimal Coordinates"
-            action_label="Decimal Coordinates"
             friendcode="decimalCoord"/>
         <OutputEndpoint
             name="poiOutput"
             type="text"
             description="A PoI has been selected on the map"
             label="PoI selected"
-            action_label="Point of Interest"
             friendcode="poi"/>
         <OutputEndpoint
             name="poiListOutput"
             type="text"
             description="Change PoI list inside the viewport"
             label="PoI visibility change"
-            action_label="PoI visibility change"
             friendcode="poiList"/>
         <OutputEndpoint
             name="boundsOutput"
             type="text"
             description="Change bounds of the current viewport."
             label="Change Viewport"
-            action_label="MapViewer: Change Bounds of Viewport"
             friendcode="viewport"/>
     </Platform.Wiring>
 
