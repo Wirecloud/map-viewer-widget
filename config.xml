@@ -4,7 +4,7 @@
         <Vendor>CoNWeT</Vendor>
         <Name>map-viewer</Name>
         <DisplayName>Map Viewer</DisplayName>
-        <Version>2.5.3</Version>
+        <Version>2.5.4</Version>
         <Author>sblanco</Author>
         <Mail>sblanco@conwet.com</Mail>
         <Description>Place things on map! Explore the world, trace routes...</Description>
