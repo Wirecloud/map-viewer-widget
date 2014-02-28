@@ -353,6 +353,11 @@
 
     var sendPoiList = function sendPoiList () {
         var bounds = this.map.getBounds();
+
+        if (bounds == null) {
+            return;
+        }
+
         var northBound = bounds.getNorthEast().lat();
         var eastBound = bounds.getNorthEast().lng();
         var southBound = bounds.getSouthWest().lat();
