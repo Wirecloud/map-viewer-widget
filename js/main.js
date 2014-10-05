@@ -49,7 +49,7 @@
         this.center = {};
         this.radius = 0;
         this.mapZoom = 11;
-        this.preferenceZoom = 17;
+        this.preferenceZoom = parseZoomValue(MashupPlatform.prefs.get('zoomPreference'), 17);
 
         this.currentViewportPoiList = {};
         // this.activeOverlayPoi = null;     // poi that has active overlays
@@ -76,7 +76,7 @@
         };
     };
 
-    MapViewer.prototype.init = function init () {
+    MapViewer.prototype.init = function init() {
 
         // Inicialize directions:
         this.directionsService = new google.maps.DirectionsService();
@@ -113,6 +113,9 @@
 
         // Marker Clusterer
         this.mapPoiManager = new MapPoiManager(this.map, this.radius);
+
+        // Set initial zoom
+        this.map.setZoom(parseZoomValue(MashupPlatform.prefs.get("initialZoom"), 17));
     };
 
 
@@ -218,10 +221,16 @@
 
 /**************************** Preference Handler *****************************/
 
-    var handlerPreferences = function handlerPreferences (preferences) {
-        setRadiusPreference.call(this, preferences.radiusPreference);
-        setCenterPreference.call(this, preferences.centerPreference);
-        setZoomPreference.call(this, preferences.zoomPreference);
+    var handlerPreferences = function handlerPreferences(preferences) {
+        if ('radiusPreference') {
+            setRadiusPreference.call(this, preferences.radiusPreference);
+        }
+        if ('centerPreference' in preferences) {
+            setCenterPreference.call(this, preferences.centerPreference);
+        }
+        if ('zoomPreference' in preferences) {
+            setZoomPreference.call(this, preferences.zoomPreference);
+        }
     };
 
 /****************************** Event Handlers *******************************/
@@ -307,17 +316,19 @@
         findLocation(center, setCenter.bind(this));
     };
 
-    var setZoomPreference = function setZoomPreference(zoom) {
-        this.preferenceZoom = parseInt(zoom, 10);
-        if(this.preferenceZoom < 1){
-            this.preferenceZoom = 1;
+    var parseZoomValue = function parseZoomValue(zoom, default_level) {
+        var zoomvalue;
+        if (zoom === '') {
+            return default_level;
         }
-        else if(this.preferenceZoom > 22){
-            this.preferenceZoom = 22;
+
+        zoomvalue = parseInt(zoom, 10);
+        if (zoomvalue < 1) {
+            zoomvalue = 1;
+        } else if (zoomvalue > 22) {
+            zoomvalue = 22;
         }
-        if (this.map) {
-            this.map.setZoom(this.preferenceZoom);
-        }
+        return zoomvalue - 1;
     };
 
 /******************************* Deletes *************************************/
@@ -329,7 +340,7 @@
 
 /******************************** Others *************************************/
 
-    var findLocation = function findLocation (add, func) {
+    var findLocation = function findLocation(add, func) {
         /*  Google Geocoding API is subject to a query limit of 2,500 geolocation requests per day.
          *  User of Google Maps API for Business may perform up to 100,000 requests per day. */
         var geocoder = new google.maps.Geocoder();

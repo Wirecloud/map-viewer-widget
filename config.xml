@@ -8,12 +8,14 @@
     <smartphoneimage>images/cataloguePhone.png</smartphoneimage>
     <description>Place things on map! Explore the world, trace routes...</description>
     <doc>http://conwet.fi.upm.es/docs/display/wirecloud/Map+Viewer</doc>
-    <authors>Santiago Blanco Ventas &lt;sblanco&gt;</authors>
+    <authors>Santiago Blanco Ventas &lt;sblanco@conwet.com&gt;</authors>
+    <contributors>Álvaro Arranz García &lt;aarranz@fi.upm.es&gt;</contributors>
   </details>
   <preferences>
     <preference name="radiusPreference" type="text" label="Mark shadow radius" description="When you click in a mark you will see a circle with this radius" default="10"/>
-    <preference name="centerPreference" type="text" label="Initial Location" description="Location or decimal coordinates where map will be focus at start. Values like 'New York' or '52, 5' are valid." default="Santander"/>
+    <preference name="centerPreference" type="text" label="Initial Location" description="Location or decimal coordinates where map will be centered on load (e.g. 'New York' or '52, 5'). Leave this setting empty for usining the position detected by Google Maps" default=""/>
     <preference name="zoomPreference" type="text" label="Zoom Level" description="Zoom level when the map is centered. From 1 to 22, where '1' represents the furthest level and '22' the maximum zoom level." default="13"/>
+    <preference name="initialZoom" type="text" label="Initial Zoom Level" description="Initial zoom level. From 1 to 22, where '1' represents the furthest level and '22' the maximum zoom level." default="1"/>
   </preferences>
   <wiring>
     <outputendpoint name="routeDescriptionOutput" type="text" label="Route Description" description="Route description step by step. It may be connected with Route Description widget." friendcode="routeDescription"/>
