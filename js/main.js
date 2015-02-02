@@ -189,10 +189,19 @@
         }
     };
 
-    var handlerInputPoi = function handlerInputPoi (poiString) {
-        var poi = new Poi(JSON.parse(poiString));
-        var handler = handlerClickMarkerPoi.bind(this, poi);
-        this.mapPoiManager.insertPoi(poi, handler);
+    var handlerInputPoi = function handlerInputPoi(poiString) {
+        var poi_list, poi, handler;
+
+        poi_list = JSON.parse(poiString);
+        if (! Array.isArray(poi_list)) {
+            poi_list = [poi_list];
+        }
+
+        for (var i = 0; i < poi_list.length; i++) {
+            poi = new Poi(poi_list[i]);
+            handler = handlerClickMarkerPoi.bind(this, poi);
+            this.mapPoiManager.insertPoi(poi, handler);
+        }
         sendPoiList.call(this);
     };
 
