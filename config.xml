@@ -7,6 +7,7 @@
     <image>images/catalogue.png</image>
     <smartphoneimage>images/cataloguePhone.png</smartphoneimage>
     <description>Place things on map! Explore the world, trace routes...</description>
+    <longdescription>DESCRIPTION.md</description>
     <doc>http://conwet.fi.upm.es/docs/display/wirecloud/Map+Viewer</doc>
     <authors>Santiago Blanco Ventas &lt;sblanco@conwet.com&gt;</authors>
     <contributors>Álvaro Arranz García &lt;aarranz@fi.upm.es&gt;</contributors>
