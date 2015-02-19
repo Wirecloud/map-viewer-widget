@@ -20,11 +20,11 @@ This widget provides a basic and simple map viewer using the Google Maps API
 - **Initial Location** (deafult: "") Initial Location" description="Location or
   decimal coordinates where map will be centered on load (e.g. 'New York' or
   '52, 5'). Leave this setting empty if you don't want to center the map at
-  init. Remember to change the initial zoom level if you provide an initial
+  init. Remember to change the **initial zoom level** if you provide an initial
   place.
 - **Zoom Level** (default: 13) Zoom level when the map is centered. From 1 to
   22, where '1' represents the furthest level and '22' the maximum zoom level.
-- **Initial Zoom Level** (default=1) Initial zoom level. From 1 to 22, where '1'
+- **Initial Zoom Level** (default=3) Initial zoom level. From 1 to 22, where '1'
   represents the furthest level and '22' the maximum zoom level.
 
 ## Wiring
