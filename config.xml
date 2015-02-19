@@ -9,6 +9,8 @@
     <smartphoneimage>images/cataloguePhone.png</smartphoneimage>
     <description>Basic map viewer widget using the Google Maps API</description>
     <longdescription>DESCRIPTION.md</longdescription>
+    <license>Apache License 2.0</license>
+    <licenseurl>http://www.apache.org/licenses/LICENSE-2.0.html</licenseurl>
     <doc>doc/userguide.md</doc>
     <changelog>doc/changelog.md</changelog>
     <authors>Santiago Blanco Ventas &lt;sblanco@conwet.com&gt;</authors>
