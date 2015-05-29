@@ -48,7 +48,7 @@
         this.map = null;
         this.center = {};
         this.mapZoom = 11;
-        this.preferenceZoom = parseZoomValue(MashupPlatform.prefs.get('zoomPreference'), 17);
+        this.preferenceZoom = parseZoomValue(MashupPlatform.prefs.get('zoomPreference'), 13);
 
         this.currentViewportPoiList = {};
         // this.activeOverlayPoi = null;     // poi that has active overlays
@@ -113,7 +113,7 @@
         this.mapPoiManager = new MapPoiManager(this.map, MashupPlatform.prefs.get('radiusPreference'));
 
         // Set initial zoom
-        this.map.setZoom(parseZoomValue(MashupPlatform.prefs.get("initialZoom"), 17));
+        this.map.setZoom(parseZoomValue(MashupPlatform.prefs.get("initialZoom"), 3));
     };
 
 
@@ -236,7 +236,7 @@
             setCenterPreference.call(this, preferences.centerPreference);
         }
         if ('zoomPreference' in preferences) {
-            setZoomPreference.call(this, preferences.zoomPreference);
+            this.preferenceZoom = parseZoomValue(MashupPlatform.prefs.get('zoomPreference'), 13);
         }
     };
 
