@@ -1,3 +1,8 @@
+v2.5.7
+======
+
+- Fixes problems handling the radius and zoom preferences
+
 v2.5.5
 ======
 
