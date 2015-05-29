@@ -31,18 +31,18 @@
     var MapPoiManager = function MapPoiManager (map, radius) {
         this.map = map;
         this.markerClusterer = null;    //new MarkerClusterer(map);
-        this.radius = radius;
 
         this.activePoi = null;  // the active poi.
         this.poiList = {};      // set of poiOverlais.
+
+        this.updateRadius(radius);
     };
 
     MapPoiManager.prototype.updateRadius = function updateRadius (radius) {
-        // update radius value:
-        this.radius = parseFloat(radius, 10);
-        // Change each poiOverlay from poiList:
-        for (var poi in this.poiList) {
-            this.poiList[poi].updateRadius(this.radius);
+        try {
+            this.default_radius = parseFloat(radius, 10);
+        } catch (e) {
+            this.default_radius = 10;
         }
     };
 
@@ -108,7 +108,7 @@
             this.poiList[poiId].setMarkerHandler(handler);
         //else:
         } else {
-            var mapOverlay = new MapOverlay(this.map,  this.markerClusterer, poi, this.radius);
+            var mapOverlay = new MapOverlay(this.map,  this.markerClusterer, poi, this.default_radius);
             mapOverlay.setMarkerHandler(handler);
             // Add it to poiList:
             this.poiList[poiId] = mapOverlay;

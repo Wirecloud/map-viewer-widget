@@ -47,7 +47,6 @@
         // Other variables:
         this.map = null;
         this.center = {};
-        this.radius = 0;
         this.mapZoom = 11;
         this.preferenceZoom = parseZoomValue(MashupPlatform.prefs.get('zoomPreference'), 17);
 
@@ -82,12 +81,11 @@
         this.directionsService = new google.maps.DirectionsService();
         this.directionsDisplay = new google.maps.DirectionsRenderer({suppressMarkers: true});
 
-        // Set Radius and center:
-        setRadiusPreference.call(this, MashupPlatform.prefs.get("radiusPreference"));
-        setCenterPreference.call(this, MashupPlatform.prefs.get("centerPreference"));
-
         // Create Map:
         this.createMap();
+
+        // Center the map in the initial location
+        setCenterPreference.call(this, MashupPlatform.prefs.get("centerPreference"));
 
         // Create a error layer:
         this.errorLayer = new ErrorLayer(document.body, this.imgPath + 'warning.png');
@@ -112,7 +110,7 @@
         this.directionsDisplay.setMap(this.map);
 
         // Marker Clusterer
-        this.mapPoiManager = new MapPoiManager(this.map, this.radius);
+        this.mapPoiManager = new MapPoiManager(this.map, MashupPlatform.prefs.get('radiusPreference'));
 
         // Set initial zoom
         this.map.setZoom(parseZoomValue(MashupPlatform.prefs.get("initialZoom"), 17));
@@ -231,8 +229,8 @@
 /**************************** Preference Handler *****************************/
 
     var handlerPreferences = function handlerPreferences(preferences) {
-        if ('radiusPreference') {
-            setRadiusPreference.call(this, preferences.radiusPreference);
+        if ('radiusPreference' in preferences && this.mapPoiManager != null) {
+            this.mapPoiManager.updateRadius(preferences.radiusPreference);
         }
         if ('centerPreference' in preferences) {
             setCenterPreference.call(this, preferences.centerPreference);
@@ -259,7 +257,7 @@
             fillColor: "#FF0000",
             fillOpacity: 0.10,
             center: latLng,
-            radius: this.radius
+            radius: this.mapPoiManager.default_radius
         };
         var circle = new google.maps.Circle(circleOptions);
         circle.setMap(this.map);
@@ -312,13 +310,6 @@
             lng: center.lng()
         };
         this.map.setCenter(center);
-    };
-
-    var setRadiusPreference = function setRadiusPreference(radius) {
-        if (this.radius) {
-            this.mapPoiManager.updateRadius(radius);
-        }
-        this.radius = parseFloat(radius);
     };
 
     var setCenterPreference = function setCenterPreference(center) {
