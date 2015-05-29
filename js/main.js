@@ -1,5 +1,5 @@
 /*
- *     (C) Copyright 2012-2013 CoNWeT Lab., Universidad Politécnica de Madrid
+ *     (C) Copyright 2012-2015 CoNWeT Lab., Universidad Politécnica de Madrid
  *
  *     This file is part of the map-viewer widget.
  *
