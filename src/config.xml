@@ -41,5 +41,5 @@
     <inputendpoint name="selectPoiInput" type="text" label="Select PoI" description="Select a PoI and change the viewport centering the map on it" actionlabel="Map Viewer Select PoI" friendcode="poi"/>
   </wiring>
   <contents src="index.html" cacheable="false"/>
-  <rendering width="7" height="50"/>
+  <rendering height="300px" width="33%"/>
 </widget>
