@@ -17,20 +17,20 @@
  *
  */
 
-/*jshint browser:true*/
-/*global MapOverlay MarkerClusterer google*/
+/* jshint browser:true*/
+/* global MapOverlay google*/
 
-(function(){
+(function () {
 
     "use strict";
 
-/******************************************************************************/
-/********************************* PUBLIC *************************************/
-/******************************************************************************/
+/** ****************************************************************************/
+/** ******************************* PUBLIC *************************************/
+/** ****************************************************************************/
 
-    var MapPoiManager = function MapPoiManager (map, radius) {
+    var MapPoiManager = function MapPoiManager(map, radius) {
         this.map = map;
-        this.markerClusterer = null;    //new MarkerClusterer(map);
+        this.markerClusterer = null;    // new MarkerClusterer(map);
 
         this.activePoi = null;  // the active poi.
         this.poiList = {};      // set of poiOverlais.
@@ -38,7 +38,7 @@
         this.updateRadius(radius);
     };
 
-    MapPoiManager.prototype.updateRadius = function updateRadius (radius) {
+    MapPoiManager.prototype.updateRadius = function updateRadius(radius) {
         try {
             this.default_radius = parseFloat(radius, 10);
         } catch (e) {
@@ -46,15 +46,15 @@
         }
     };
 
-    MapPoiManager.prototype.insertPoi = function insertPoi (poi, handler) {
+    MapPoiManager.prototype.insertPoi = function insertPoi(poi, handler) {
         addPoi.call(this, poi, handler);
     };
 
-    MapPoiManager.prototype.removePoi = function removePoi (poi) {
+    MapPoiManager.prototype.removePoi = function removePoi(poi) {
         deletePoi.call(this, poi);
     };
 
-    MapPoiManager.prototype.selectPoi = function selectPoi (poi) {
+    MapPoiManager.prototype.selectPoi = function selectPoi(poi) {
         if (this.activePoi) {
             if (this.activePoi !== poi.getId()) {
                 deactivatePoi.call(this, this.activePoi);
@@ -67,7 +67,7 @@
         }
     };
 
-    MapPoiManager.prototype.centerMap = function centerMap (poi) {
+    MapPoiManager.prototype.centerMap = function centerMap(poi) {
         var poiId = poi.getId();
         if (poiId in this.poiList) {
             var center = this.poiList[poiId].getPosition();
@@ -76,37 +76,37 @@
         }
     };
 
-    MapPoiManager.prototype.getRoute = function getRoute (poiFromId, poiToId) {
+    MapPoiManager.prototype.getRoute = function getRoute(poiFromId, poiToId) {
         if (poiFromId in this.poiList && poiToId in this.poiList) {
-        return {
+            return {
                 from: this.poiList[poiFromId].getPosition(),
                 to: this.poiList[poiToId].getPosition()
             };
         }
     };
 
-    MapPoiManager.prototype.getPoiList = function getPoiList () {
+    MapPoiManager.prototype.getPoiList = function getPoiList() {
         return this.poiList;
     };
 
-    MapPoiManager.prototype.getStringPoiList = function getPoiList () {
+    MapPoiManager.prototype.getStringPoiList = function getPoiList() {
         return JSON.stringify(this.poiList);
     };
 
-/******************************************************************************/
-/********************************* PRIVATE ************************************/
-/******************************************************************************/
+/** ****************************************************************************/
+/** ******************************* PRIVATE ************************************/
+/** ****************************************************************************/
 
-    var addPoi = function addPoi (poi, handler) {
-        //get poi id.
+    var addPoi = function addPoi(poi, handler) {
+        // get poi id.
         var poiId = poi.getId();
-        //find poi in poiList.
-        //if poi exist into poiList:
+        // find poi in poiList.
+        // if poi exist into poiList:
         if (poiId in this.poiList) {
             // update its position.
             this.poiList[poiId].updatePoi(poi);
             this.poiList[poiId].setMarkerHandler(handler);
-        //else:
+        // else:
         } else {
             var mapOverlay = new MapOverlay(this.map,  this.markerClusterer, poi, this.default_radius);
             mapOverlay.setMarkerHandler(handler);
@@ -115,11 +115,11 @@
         }
     };
 
-    var deletePoi = function deletePoi (poi) {
-        //get poi id.
+    var deletePoi = function deletePoi(poi) {
+        // get poi id.
         var poiId = poi.getId();
-        //find poi in poiList
-        //if poi exists then:
+        // find poi in poiList
+        // if poi exists then:
         if (poiId in this.poiList) {
             // remove from poiList.
             this.poiList[poiId].destroy();
@@ -128,7 +128,7 @@
         }
     };
 
-    var activatePoi = function activatePoi (poi) {
+    var activatePoi = function activatePoi(poi) {
         // get poi id.
         var poiId = poi.getId();
         // find poi in poiList.
@@ -139,7 +139,7 @@
         this.activePoi = poiId;
     };
 
-    var deactivatePoi = function deactivatePoi (poiId) {
+    var deactivatePoi = function deactivatePoi(poiId) {
         // find poi in poiList.
         if (poiId in this.poiList) {
             // show its overlays.
@@ -148,8 +148,8 @@
         this.activePoi = null;
     };
 
-    /******************************** HANDLERS ************************************/
+    /** ****************************** HANDLERS ************************************/
 
     window.MapPoiManager = MapPoiManager;
 
- })();
+})();

@@ -17,16 +17,16 @@
  *
  */
 
-/*jshint browser:true*/
-/*global google Poi*/
+/* jshint browser:true*/
+/* global google*/
 
-(function() {
+(function () {
 
     "use strict";
 
-/******************************************************************************/
-/********************************* PUBLIC *************************************/
-/******************************************************************************/
+/** ****************************************************************************/
+/** ******************************* PUBLIC *************************************/
+/** ****************************************************************************/
 
     var MapOverlay = function MapOverlay(map, markerClusterer, poi, radius) {
 
@@ -42,7 +42,7 @@
         this.circle = {};
         this.infoWindow = {};
         this.marker = {};
-        
+
         this.radius = radius;
         this.contentInfoWindow = this.poi.getInfoWindow();
         this.position = this.poi.getDecimalCoords();
@@ -56,12 +56,12 @@
         this.marker.setMap(this.map);
     };
 
-    MapOverlay.prototype.updateRadius = function updateRadius (radius) {
+    MapOverlay.prototype.updateRadius = function updateRadius(radius) {
         this.radius = radius;
         updateCircle.call(this);
     };
 
-    MapOverlay.prototype.updatePoi = function updatePoi (poi) {
+    MapOverlay.prototype.updatePoi = function updatePoi(poi) {
         this.poi = poi;
 
         this.contentInfoWindow = this.poi.getInfoWindow();
@@ -74,44 +74,44 @@
         updateMarker.call(this);
     };
 
-    MapOverlay.prototype.setMarkerHandler = function setMarkerHandler (handler) {
+    MapOverlay.prototype.setMarkerHandler = function setMarkerHandler(handler) {
         google.maps.event.clearInstanceListeners(this.marker);
         google.maps.event.addListener(this.marker, "click", handler);
     };
 
-    MapOverlay.prototype.showOverlays = function showOverlays () {
+    MapOverlay.prototype.showOverlays = function showOverlays() {
         this.circle.setMap(this.map);
         this.infoWindow.open(this.map, this.marker);
         this.overlaysDisplayed = true;
     };
 
-    MapOverlay.prototype.hideOverlays = function hideOverlays () {
+    MapOverlay.prototype.hideOverlays = function hideOverlays() {
         this.circle.setMap(null);
         this.infoWindow.close();
         this.overlaysDisplayed = false;
     };
 
-    MapOverlay.prototype.destroy = function destroy () {
+    MapOverlay.prototype.destroy = function destroy() {
         this.hideOverlays();
         if (this.markerClusterer) {
             this.markerClusterer.removeMarker(this.marker);
         }
         this.marker.setMap(null);
-        
+
     };
 
-    MapOverlay.prototype.getPosition = function getPosition () {
+    MapOverlay.prototype.getPosition = function getPosition() {
         return this.position;
     };
 
-/******************************************************************************/
-/********************************* PRIVATE ************************************/
-/******************************************************************************/
+/** ****************************************************************************/
+/** ******************************* PRIVATE ************************************/
+/** ****************************************************************************/
 
 
-/*********************************** Add **************************************/
+/** ********************************* Add **************************************/
 
-    var createElements = function createElements () {
+    var createElements = function createElements() {
         var googlePosition = new google.maps.LatLng(this.position.lat, this.position.lng);
         var options = {
             "circle": {
@@ -129,7 +129,7 @@
             },
             "marker": {
                 map: this.map,
-                //animation: google.maps.Animation.DROP,
+                // animation: google.maps.Animation.DROP,
                 position: googlePosition,
                 title: this.tooltip,
                 visible: true
@@ -147,7 +147,7 @@
         }
     };
 
-    var createElement = function createElement (item, options) {
+    var createElement = function createElement(item, options) {
         var constructor = {
             "circle": "Circle",
             "infoWindow": "InfoWindow",
@@ -157,21 +157,21 @@
         this[item] = new google.maps[constructor[item]](options);
     };
 
-/****************************** Update ***********************************/
+/** **************************** Update ***********************************/
 
-    var updateCircle = function updateCircle () {
+    var updateCircle = function updateCircle() {
         var googlePosition = new google.maps.LatLng(this.position.lat, this.position.lng);
         this.circle.setRadius(this.radius);
         this.circle.setCenter(googlePosition);
     };
 
-    var updateInfoWindow = function updateInfoWindow () {
+    var updateInfoWindow = function updateInfoWindow() {
         var googlePosition = new google.maps.LatLng(this.position.lat, this.position.lng);
         this.infoWindow.setContent(this.contentInfoWindow);
         this.infoWindow.setPosition(googlePosition);
     };
 
-    var updateMarker = function updateMarker () {
+    var updateMarker = function updateMarker() {
         var googlePosition = new google.maps.LatLng(this.position.lat, this.position.lng);
         this.marker.setMap(null);
         this.marker.setAnimation(null);
@@ -180,26 +180,9 @@
         this.marker.setMap(this.map);
     };
 
-/****************************** Delete ***********************************/
-
-    var deleteCircle = function deleteCircle (circle) {
-        this.circle.setMap(null);
-        this.circle = null;
-    };
-
-    var deleteInfoWindow = function deleteInfoWindow (infoWindow) {
-        this.infoWindow.close();
-        this.infoWindow = null;
-    };
-
-    var deleteMarker = function deleteMarker (marker) {
-        this.marker.setMap(null);
-        this.marker = null;
-    };
-
-/******************************** Others *************************************/
+/** ****************************** Others *************************************/
 
     // add MapOverlay to window:
     window.MapOverlay = MapOverlay;
 
- })();
+})();

@@ -1,3 +1,4 @@
+
 /*
  *     (C) Copyright 2012-2015 CoNWeT Lab., Universidad Politécnica de Madrid
  *
@@ -17,14 +18,14 @@
  *
  */
 
-/*jshint browser:true*/
-/*global google Poi MashupPlatform Coordinates console MarkerClusterer ErrorLayer MapPoiManager*/
+/* globals google Poi MashupPlatform Wirecloud console ErrorLayer MapPoiManager*/
+/* exported MapViewer*/
 
 (function () {
 
     "use strict";
 
-    var MapViewer = function MapViewer (divIdName) {
+    var MapViewer = function MapViewer(divIdName) {
         /* This widget uses Google Maps API v3 */
 
         // Input callbacks:
@@ -39,7 +40,7 @@
 
         // Preferences callback:
         MashupPlatform.prefs.registerCallback(handlerPreferences.bind(this));
-        
+
         /* HTML variables */
         this.divIdName = divIdName;
         this.imgPath = 'images/';
@@ -64,11 +65,11 @@
          * */
 
         // Google Direction Services:
-        this.directionsService = {}; 
+        this.directionsService = {};
         this.directionsDisplay = {};
         this.travelMode = google.maps.DirectionsTravelMode.DRIVING; // map type view.
 
-        //To manage Step Route:
+        // To manage Step Route:
         this.activeRoute = {
             route: {},
             stepInfoWindow: null
@@ -91,7 +92,7 @@
         this.errorLayer = new ErrorLayer(document.body, this.imgPath + 'warning.png');
     };
 
-    MapViewer.prototype.createMap = function createMap () {
+    MapViewer.prototype.createMap = function createMap() {
         // set options to see an hybrid map with zoom enougth center in somewhere:
         this.mapOptions = {
             zoom: this.mapZoom,
@@ -117,13 +118,13 @@
     };
 
 
-/*****************************************************************************/
-/****************************** HANDLERS *************************************/
-/*****************************************************************************/
+/** ***************************************************************************/
+/** **************************** HANDLERS *************************************/
+/** ***************************************************************************/
 
-/******************************** Input Handlers *****************************/
+/** ****************************** Input Handlers *****************************/
 
-    var handlerInputRoute = function handlerInputRoute (fromToString) {
+    var handlerInputRoute = function handlerInputRoute(fromToString) {
         /*  route example:
          *      {
          *          from: "iss33"
@@ -151,15 +152,15 @@
                     }
                 }.bind(this));
             } else {
-                this.directionsDisplay.setDirections({routes:[]});
+                this.directionsDisplay.setDirections({routes: []});
             }
         } else {
             // Delete Route
-            this.directionsDisplay.setDirections({routes:[]});
+            this.directionsDisplay.setDirections({routes: []});
         }
     };
 
-    var handlerInputRouteStep = function handlerInputRouteStep (stepNum) {
+    var handlerInputRouteStep = function handlerInputRouteStep(stepNum) {
         if (this.activeRoute.stepInfoWindow) {
             this.activeRoute.stepInfoWindow.close(this.map);
         }
@@ -170,11 +171,11 @@
         this.activeRoute.stepInfoWindow.open(this.map);
     };
 
-    var handlerInputAddress = function handlerInputAddress (add) {
-            findLocation(add, createMarker.bind(this));
+    var handlerInputAddress = function handlerInputAddress(add) {
+        findLocation(add, createMarker.bind(this));
     };
 
-    var handlerInputCoords = function handlerInputDecimalCoord (decimalCoords) {
+    var handlerInputCoords = function handlerInputDecimalCoord(decimalCoords) {
         var decPattern = /^-{0,1}[0-9]+.{0,1}[0-9]*, -{0,1}[0-9]+.{0,1}[0-9]*$/;
         if (decimalCoords && decPattern.test(decimalCoords)) {
             var decimalCoordsLatLng = decimalCoords.split(", ");
@@ -183,7 +184,7 @@
             var latLng = new google.maps.LatLng(lat, lng);
             createMarker.call(this, latLng);
         } else {
-            console.log("Input Decimal Coord: wrong params.");
+            Wirecloud.widget.log("Input Decimal Coord: wrong params.");
         }
     };
 
@@ -191,7 +192,7 @@
         var poi_list, poi, handler;
 
         poi_list = JSON.parse(poiString);
-        if (! Array.isArray(poi_list)) {
+        if (!Array.isArray(poi_list)) {
             poi_list = [poi_list];
         }
 
@@ -203,13 +204,13 @@
         sendPoiList.call(this);
     };
 
-    var handlerInputDeletePoi = function handlerInputDeletePoi (poiString) {
+    var handlerInputDeletePoi = function handlerInputDeletePoi(poiString) {
         var poi = new Poi(JSON.parse(poiString));
         this.mapPoiManager.removePoi(poi);
         sendPoiList.call(this);
     };
 
-    var handlerInputPoiCenter = function handlerInputPoiCenter (poiString) {
+    var handlerInputPoiCenter = function handlerInputPoiCenter(poiString) {
         var poi = new Poi(JSON.parse(poiString));
         this.mapPoiManager.insertPoi(poi, handlerClickMarkerPoi.bind(this, poi));
         this.mapPoiManager.selectPoi(poi);
@@ -226,7 +227,7 @@
         this.map.setZoom(this.preferenceZoom);
     };
 
-/**************************** Preference Handler *****************************/
+/** ************************** Preference Handler *****************************/
 
     var handlerPreferences = function handlerPreferences(preferences) {
         if ('radiusPreference' in preferences && this.mapPoiManager != null) {
@@ -240,16 +241,16 @@
         }
     };
 
-/****************************** Event Handlers *******************************/
+/** **************************** Event Handlers *******************************/
 
-    var handlerClickMarkerPoi = function handlerClickMarkerPoi (poi) {
+    var handlerClickMarkerPoi = function handlerClickMarkerPoi(poi) {
         if (poi) {
             this.mapPoiManager.selectPoi(poi);
             MashupPlatform.wiring.pushEvent('poiOutput', JSON.stringify(poi));
         }
     };
 
-    var handlerClickMarker = function handlerClickMarker (latLng, marker) {
+    var handlerClickMarker = function handlerClickMarker(latLng, marker) {
         var circleOptions = {
             strokeColor: "#FF0000",
             strokeOpacity: 0.8,
@@ -264,21 +265,19 @@
         google.maps.event.addListenerOnce(marker, "click", deleteCircle.bind(this, latLng, circle, marker));
     };
 
-    var handlerChangeViewport = function handlerChangeViewport () {
+    var handlerChangeViewport = function handlerChangeViewport() {
         sendBounds.call(this);
         sendPoiList.call(this);
     };
 
 
-/*****************************************************************************/
-/******************************* AUXILIAR ************************************/
-/*****************************************************************************/
+/** ***************************************************************************/
+/** ***************************** AUXILIAR ************************************/
+/** ***************************************************************************/
 
-/******************************* Creators ************************************/
+/** ***************************** Creators ************************************/
 
-    var createMarker = function createMarker (latLng, iconUrl) {
-        var imageSize = {};
-        var markerImage = {};
+    var createMarker = function createMarker(latLng, iconUrl) {
         var marker = setMarker.call(this, latLng, iconUrl);
         marker.setAnimation(google.maps.Animation.DROP);
         google.maps.event.addListenerOnce(marker, "click", handlerClickMarker.bind(this, latLng, marker));
@@ -287,9 +286,9 @@
         return marker;
     };
 
-/******************************** Setters ************************************/
+/** ****************************** Setters ************************************/
 
-    var setMarker = function setMarker (latLng, iconUrl) {
+    var setMarker = function setMarker(latLng, iconUrl) {
         var markerOptions = {
             map: this.map,
             position: latLng,
@@ -304,7 +303,7 @@
         return new google.maps.Marker(markerOptions);
     };
 
-    var setCenter = function setCenter(center){
+    var setCenter = function setCenter(center) {
         this.center = {
             lat: center.lat(),
             lng: center.lng()
@@ -331,14 +330,14 @@
         return zoomvalue - 1;
     };
 
-/******************************* Deletes *************************************/
+/** ***************************** Deletes *************************************/
 
-    var deleteCircle = function deleteCircle (latLng, circle, marker) {
+    var deleteCircle = function deleteCircle(latLng, circle, marker) {
         circle.setMap(null);
         google.maps.event.addListenerOnce(marker, "click", handlerClickMarker.bind(this, latLng, marker));
     };
 
-/******************************** Others *************************************/
+/** ****************************** Others *************************************/
 
     var findLocation = function findLocation(add, func) {
         /*  Google Geocoding API is subject to a query limit of 2,500 geolocation requests per day.
@@ -354,15 +353,15 @@
             }
         }.bind(this));
     };
-    
-/******************************* Senders *************************************/
 
-    var sendBounds = function sendBounds () {
+/** ***************************** Senders *************************************/
+
+    var sendBounds = function sendBounds() {
         var bounds = this.map.getBounds();
         MashupPlatform.wiring.pushEvent("boundsOutput", bounds.toString());
     };
 
-    var sendPoiList = function sendPoiList () {
+    var sendPoiList = function sendPoiList() {
         var bounds = this.map.getBounds();
 
         if (bounds == null) {
@@ -398,9 +397,9 @@
     };
 
 
-/****************************** Overlays *************************************/
+/** **************************** Overlays *************************************/
 
-    var createInfoWindow = function createInfoWindow (latLng, content) {
+    var createInfoWindow = function createInfoWindow(latLng, content) {
         var infoWindow = new google.maps.InfoWindow();
 
         if (!content) {
@@ -417,6 +416,7 @@
 
 })();
 
+// eslint-disable-next-line
 var mapViewer = new MapViewer("map_canvas");
 
 document.addEventListener("DOMContentLoaded", mapViewer.init.bind(mapViewer), false);

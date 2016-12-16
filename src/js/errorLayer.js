@@ -17,21 +17,20 @@
  *
  */
 
-/*jshint browser:true*/
-/*global MashupPlatform StyledElements*/
+/* jshint browser:true*/
 
-(function(){
+(function () {
 
     "use strict";
 
-/*****************************************************************************/
-/******************************** PUBLIC *************************************/
-/*****************************************************************************/
+/** ***************************************************************************/
+/** ****************************** PUBLIC *************************************/
+/** ***************************************************************************/
 
     /* This class control errors.
      * @constructor
      * */
-    var ErrorLayer = function ErrorLayer (parentNode, imgIcon) {
+    var ErrorLayer = function ErrorLayer(parentNode, imgIcon) {
         this.msg = "";
         this.parentNode = parentNode;
         this.imgIcon = imgIcon;
@@ -43,25 +42,25 @@
         createLayer.call(this);
     };
 
-    ErrorLayer.prototype.showError = function showError (msg) {
+    ErrorLayer.prototype.showError = function showError(msg) {
         this.layerDiv.style.display = "inline";
         this.imgDiv.style.display = "inline";
         this.msgDiv.textContent = msg;
         this.msgDiv.appendChild(this.closeButton);
     };
 
-/*****************************************************************************/
-/******************************** PRIVATE ************************************/
-/*****************************************************************************/
+/** ***************************************************************************/
+/** ****************************** PRIVATE ************************************/
+/** ***************************************************************************/
 
-    var createIcon = function createIcon () {
+    var createIcon = function createIcon() {
         this.imgDiv = document.createElement("img");
         this.imgDiv.setAttribute("src", this.imgIcon);
         this.imgDiv.addEventListener("click", showMsg.bind(this), false);
         this.imgDiv.style.display = "none";
     };
 
-    var createCloseButton = function createCloseButton () {
+    var createCloseButton = function createCloseButton() {
         this.closeButton = document.createElement("button");
         this.closeButton.setAttribute("type", "button");
         this.closeButton.setAttribute("class", "close");
@@ -69,17 +68,17 @@
         this.closeButton.setAttribute("click", hideError.bind(this), false);
     };
 
-    var createMsg = function createMsg () {
+    var createMsg = function createMsg() {
         this.msgDiv = document.createElement("div");
         this.msgDiv.setAttribute("class", "alert alert-block");
         this.msgDiv.style.display = "none";
     };
 
-    var createLayer = function createLayer () {
+    var createLayer = function createLayer() {
         this.layerDiv = document.createElement("div");
         this.layerDiv.setAttribute("id", "error");
         this.layerDiv.style.display = "none";
-        
+
         createIcon.call(this);
         createMsg.call(this);
         createCloseButton.call(this);
@@ -89,18 +88,18 @@
         this.parentNode.appendChild(this.layerDiv);
     };
 
-    var hideError = function hideError () {
+    var hideError = function hideError() {
         this.msgDiv.style.display = "none";
         this.imgIcon.style.display = "none";
         this.layerDiv.style.display = "none";
     };
 
-    var showMsg = function showMsg () {
+    var showMsg = function showMsg() {
         this.msgDiv.style.display = "block";
     };
 
-/******************************* HANDLERS ************************************/
+/** ***************************** HANDLERS ************************************/
 
     window.ErrorLayer = ErrorLayer;
 
- })();
+})();

@@ -17,15 +17,15 @@
  *
  */
 
-/*global window Coordinates */
+/* global window Coordinates */
 
-(function(){
- 
+(function () {
+
     "use strict";
 
-    /*****************************************************/
-    /********************* PUBLIC ************************/
-    /*****************************************************/
+    /** ***************************************************/
+    /** ******************* PUBLIC ************************/
+    /** ***************************************************/
 
     var Poi = function Poi(poi) {
         this.poi = {
@@ -35,9 +35,9 @@
                 lat: "",            // Latitude in geodetic datum system
                 lng: ""             // Longitude in geodetic datum system
             },
-            icon:"",
-            tooltip:"",
-            data:{}
+            icon: "",
+            tooltip: "",
+            data: {}
         };
 /*      this.poi = {
             id: "tec33",
@@ -53,12 +53,12 @@
         };*/
         this.coordinates = {
             utm: {
-                lat:0,
-                lng:0
+                lat: 0,
+                lng: 0
             },
             decimal: {
-                lat:0,
-                lng:0
+                lat: 0,
+                lng: 0
             }
         };
 
@@ -71,7 +71,7 @@
 
         this.poi = poi;
 
-        if (poi.currentLocation && poi.currentLocation.lat && poi.currentLocation.lng){
+        if (poi.currentLocation && poi.currentLocation.lat && poi.currentLocation.lng) {
             lat = parseFloat(poi.currentLocation.lat);
             lng = parseFloat(poi.currentLocation.lng);
             if (poi.currentLocation.system == "UTM") {
@@ -86,7 +86,7 @@
         }
     };
 
-    Poi.prototype.getId= function getId() {
+    Poi.prototype.getId = function getId() {
         return this.poi.id;
     };
 
@@ -95,49 +95,36 @@
     };
 
     Poi.prototype.getUtmCoords = function getUtmCoords() {
-       return this.coordinates.utm;
+        return this.coordinates.utm;
     };
 
     Poi.prototype.getDecimalCoords = function getDecimalCoords() {
-       return this.coordinates.decimal;
+        return this.coordinates.decimal;
     };
 
     Poi.prototype.getTooltip = function getToolTip() {
-       return this.poi.tooltip;
+        return this.poi.tooltip;
     };
 
     Poi.prototype.getData = function getData() {
         return this.poi.data;
     };
 
-    Poi.prototype.getInfoWindow = function getInfoWindow () {
+    Poi.prototype.getInfoWindow = function getInfoWindow() {
         return this.poi.infoWindow;
     };
 
-    /*****************************************************/
-    /******************** PRIVATE ************************/
-    /*****************************************************/
-    
-    /*  string2LatLng: Transform string to coordinates. Decimal and utm are supported.
-     *      - Parameters:
-     *          - string: decimal or utm coordinates in string format. Example: "54.43, 76.761"
-     *      - Return: An latLng object. Example: {lat; 26.54, lng: 32.123}
-     * */
-    var string2LatLng = function string2LatLng (string) {
-        var latlng = string.split(',');
-        return {
-            lat: parseFloat(latlng[0]),
-            lng: parseFloat(latlng[1])
-        };
-    };
-    
+    /** ***************************************************/
+    /** ****************** PRIVATE ************************/
+    /** ***************************************************/
+
     /*  utm2decimal: Transform utm coordinates to decimal coordinates.
      *      - Parameters:
      *          - utmLat: Latitude. A number.
      *          - utmLng: Longitude. A number.
      *      - Return: decimal coordinates in latLng object. Example: {lat; 26.54, lng: 32.123}
      * */
-    var utm2decimal = function utm2decimal (utmLat, utmLng) {
+    var utm2decimal = function utm2decimal(utmLat, utmLng) {
         var coordinates = new Coordinates();
         var decimalCoords = [];
         var southhemi = utmLat < 0 ? true : false;
@@ -156,7 +143,7 @@
      *          - decLng: Longitude. A number.
      *      - Return: utm coordinates in latLng object. Example: {lat; 2654, lng: 32123}
      * */
-    var decimal2utm = function decimal2utm (decLat, decLng) {
+    var decimal2utm = function decimal2utm(decLat, decLng) {
         var coordinates = new Coordinates();
         var utmCoords = [];
 
@@ -169,4 +156,4 @@
     };
 
     window.Poi = Poi;
- })();
+})();

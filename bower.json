@@ -1,0 +1,15 @@
+{
+  "name": "ckan-resource-selector",
+  "dependencies": {
+    "marked": "0.3.5",
+      "jquery": "~2.1.4"
+  },
+  "exportsOverride": {
+    "jquery": {
+      "js": "dist/jquery.min.js"
+    },
+    "marked": {
+      "js": "marked.min.js"
+    }
+  }
+}
