@@ -29,18 +29,20 @@ This widget provides a basic and simple map viewer using the Google Maps API
 
 ## Wiring
 
-Input Endpoints:
+### Input Endpoints
 
 - **Insert/Update PoI**: Insert or update a Point of Interest. This endpoint
   supports sending just a PoI or severals through an array. Each PoI is composed
   of the following fields:
     - `id` (required):
-    - `coordinates` (required):
+    - `location` (required if `currentLocation` not used): a GeoJSON geometry.
+      e.g. `{"type": "Point", "coordinates": [125.6, 10.1]}`
+    - `currentLocation` (deprecated, required if `location` not used):
         - `longitude` (required):
 		- `latitude` (required):
         - `system`: geodetic datum system (usually WGS84, it can be UTM)
-	- `title`:
-    - `subtitle`:
+    - `title`: title associated to the PoI
+    - `subtitle`: subtitle associated to the PoI
     - `infoWindow`: content (using HTML) associated with the PoI.
     - `tooltip`: 
     - `data`: Data associated with the point of interest, used by the **PoI
@@ -52,7 +54,7 @@ Input Endpoints:
 - **Select PoI**: Select a PoI and change
 - **Delete PoI**: Removes a point or more point of interests from the map.
 
-Output Endpoints:
+### Output Endpoints
 
 - **PoI selected**: A PoI has been selected on the map.
 
