@@ -188,10 +188,17 @@
         }
     };
 
-    var handlerInputPoi = function handlerInputPoi(poiString) {
-        var poi_list, poi, handler;
+    var handlerInputPoi = function handlerInputPoi(poi_list) {
+        var poi, handler;
 
-        poi_list = JSON.parse(poiString);
+        if (typeof poi_list === "string") {
+            try {
+                poi_list = JSON.parse(poi_list);
+            } catch (e) {
+                throw new MashupPlatform.wiring.EndpointTypeError();
+            }
+        }
+
         if (!Array.isArray(poi_list)) {
             poi_list = [poi_list];
         }
@@ -204,14 +211,29 @@
         sendPoiList.call(this);
     };
 
-    var handlerInputDeletePoi = function handlerInputDeletePoi(poiString) {
-        var poi = new Poi(JSON.parse(poiString));
-        this.mapPoiManager.removePoi(poi);
+    var handlerInputDeletePoi = function handlerInputDeletePoi(poi) {
+        if (typeof poi === "string") {
+            try {
+                poi = JSON.parse(poi);
+            } catch (e) {
+                throw new MashupPlatform.wiring.EndpointTypeError();
+            }
+        }
+
+        this.mapPoiManager.removePoi(new Poi(poi));
         sendPoiList.call(this);
     };
 
-    var handlerInputPoiCenter = function handlerInputPoiCenter(poiString) {
-        var poi = new Poi(JSON.parse(poiString));
+    var handlerInputPoiCenter = function handlerInputPoiCenter(poi) {
+        if (typeof poi === "string") {
+            try {
+                poi = JSON.parse(poi);
+            } catch (e) {
+                throw new MashupPlatform.wiring.EndpointTypeError();
+            }
+        }
+        poi = new Poi(poi);
+
         this.mapPoiManager.insertPoi(poi, handlerClickMarkerPoi.bind(this, poi));
         this.mapPoiManager.selectPoi(poi);
         var position = poi.getDecimalCoords();
@@ -220,8 +242,16 @@
         this.map.setZoom(this.preferenceZoom);
     };
 
-    var handlerInputSelectPoi = function handlerInputSelectPoi(poiString) {
-        var poi = new Poi(JSON.parse(poiString));
+    var handlerInputSelectPoi = function handlerInputSelectPoi(poi) {
+        if (typeof poi === "string") {
+            try {
+                poi = JSON.parse(poi);
+            } catch (e) {
+                throw new MashupPlatform.wiring.EndpointTypeError();
+            }
+        }
+        poi = new Poi(poi);
+
         this.mapPoiManager.selectPoi(poi);
         this.mapPoiManager.centerMap(poi);
         this.map.setZoom(this.preferenceZoom);
@@ -392,7 +422,7 @@
         }
 
         if (this.currentViewportPoiList) {
-            MashupPlatform.wiring.pushEvent("poiListOutput", JSON.stringify(this.currentViewportPoiList));
+            MashupPlatform.wiring.pushEvent("poiListOutput", this.currentViewportPoiList);
         }
     };
 
