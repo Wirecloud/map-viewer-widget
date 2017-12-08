@@ -34,7 +34,8 @@ This widget provides a basic and simple map viewer using the Google Maps API
 - **Insert/Update PoI**: Insert or update a Point of Interest. This endpoint
   supports sending just a PoI or severals through an array. Each PoI is composed
   of the following fields:
-    - `id` (required):
+    - **`id`** (required): id used for identifying this PoI. Used in the update
+      and delete operations for locating the associated PoI.
     - `location` (required if `currentLocation` not used): a GeoJSON geometry.
       e.g. `{"type": "Point", "coordinates": [125.6, 10.1]}`
     - `currentLocation` (deprecated, required if `location` not used):
@@ -44,7 +45,7 @@ This widget provides a basic and simple map viewer using the Google Maps API
     - `title`: title associated to the PoI
     - `subtitle`: subtitle associated to the PoI
     - `infoWindow`: content (using HTML) associated with the PoI.
-    - `tooltip`: 
+    - `tooltip`: text to be displayed as tooltip when the mouse is over the PoI.
     - `data`: Data associated with the point of interest, used by the **PoI
       selected** output endpoint.
     - `icon`: URL of the icon to use for the marker
