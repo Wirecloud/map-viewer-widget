@@ -33,12 +33,21 @@
 
         this.poi = poi;
 
-        if (poi.location == null && poi.currentLocation && poi.currentLocation.lat && poi.currentLocation.lng) {
+        this.id = poi.id;
+        this.title = poi.title;
+        this.tooltip = poi.tooltip;
+        this.icon = poi.icon;
+        this.style = poi.style;
+        this.data = poi.data;
+        this.location = poi.location;
+        this.infoWindow = poi.infoWindow;
+
+        if (this.location == null && poi.currentLocation != null && poi.currentLocation.lat != null && poi.currentLocation.lng != null) {
             // Convert deprecated currentLocation attribute to the new location attribute
             lat = parseFloat(poi.currentLocation.lat);
             lng = parseFloat(poi.currentLocation.lng);
 
-            this.poi.location = {
+            this.location = {
                 "type": "Point"
             };
 
@@ -47,28 +56,8 @@
                 lat = tmp.lat;
                 lng = tmp.lng;
             }
-            this.poi.location.coordinates = [lat, lng];
+            this.location.coordinates = [lat, lng];
         }
-    };
-
-    Poi.prototype.getId = function getId() {
-        return this.poi.id;
-    };
-
-    Poi.prototype.getIcon = function getIcon() {
-        return this.poi.icon;
-    };
-
-    Poi.prototype.getTooltip = function getToolTip() {
-        return this.poi.tooltip;
-    };
-
-    Poi.prototype.getData = function getData() {
-        return this.poi.data;
-    };
-
-    Poi.prototype.getInfoWindow = function getInfoWindow() {
-        return this.poi.infoWindow;
     };
 
     /** ***************************************************/

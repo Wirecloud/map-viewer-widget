@@ -18,7 +18,7 @@
  */
 
 /* jshint browser:true*/
-/* global MapOverlay google*/
+/* global MapOverlay */
 
 (function () {
 
@@ -56,7 +56,7 @@
 
     MapPoiManager.prototype.selectPoi = function selectPoi(poi) {
         if (this.activePoi) {
-            if (this.activePoi !== poi.getId()) {
+            if (this.activePoi !== poi.id) {
                 deactivatePoi.call(this, this.activePoi);
                 activatePoi.call(this, poi);
             } else {
@@ -68,11 +68,8 @@
     };
 
     MapPoiManager.prototype.centerMap = function centerMap(poi) {
-        var poiId = poi.getId();
-        if (poiId in this.poiList) {
-            var center = this.poiList[poiId].getPosition();
-            var googleCoords = new google.maps.LatLng(center.lat, center.lng);
-            this.map.setCenter(googleCoords);
+        if (poi.id in this.poiList) {
+            this.map.setCenter(this.poiList[poi.id].bounds.getCenter());
         }
     };
 
@@ -98,44 +95,34 @@
 /** ****************************************************************************/
 
     var addPoi = function addPoi(poi, handler) {
-        // get poi id.
-        var poiId = poi.getId();
-        // find poi in poiList.
-        // if poi exist into poiList:
-        if (poiId in this.poiList) {
-            // update its position.
-            this.poiList[poiId].updatePoi(poi);
-            this.poiList[poiId].setMarkerHandler(handler);
+        // If poi exist into poiList
+        if (poi.id in this.poiList) {
+            // Update its position
+            this.poiList[poi.id].updatePoi(poi);
         } else {
-            var mapOverlay = new MapOverlay(this.map,  this.markerClusterer, poi, this.default_radius);
+            // Else, add it to poiList
+            var mapOverlay = new MapOverlay(this.map, this.markerClusterer, poi);
             mapOverlay.setMarkerHandler(handler);
-            // Add it to poiList:
-            this.poiList[poiId] = mapOverlay;
+            this.poiList[poi.id] = mapOverlay;
         }
     };
 
     var deletePoi = function deletePoi(poi) {
-        // get poi id.
-        var poiId = poi.getId();
-        // find poi in poiList
-        // if poi exists then:
-        if (poiId in this.poiList) {
+        if (poi.id in this.poiList) {
             // remove from poiList.
-            this.poiList[poiId].destroy();
-            this.poiList[poiId] = null;
-            delete this.poiList[poiId];
+            this.poiList[poi.id].destroy();
+            this.poiList[poi.id] = null;
+            delete this.poiList[poi.id];
         }
     };
 
     var activatePoi = function activatePoi(poi) {
-        // get poi id.
-        var poiId = poi.getId();
         // find poi in poiList.
-        if (poiId in this.poiList) {
+        if (poi.id in this.poiList) {
             // show its overlays.
-            this.poiList[poiId].showOverlays();
+            this.poiList[poi.id].showOverlays();
         }
-        this.activePoi = poiId;
+        this.activePoi = poi.id;
     };
 
     var deactivatePoi = function deactivatePoi(poiId) {

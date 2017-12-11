@@ -32,24 +32,17 @@
 
     var MapOverlay = function MapOverlay(map, markerClusterer, poi, radius) {
 
-        if (!map || !poi || !radius) {
-            throw new TypeError("Map, poi and radius parameters are required.");
+        if (!map || !poi) {
+            throw new TypeError("map and poi parameters are required.");
         }
 
         this.map = map;
         this.markerClusterer = markerClusterer;
         this.overlaysDisplayed = false;
 
-        this.poi = poi;
-        this.infoWindow = {};
-        this.marker = {};
+        createElements.call(this, poi);
+        this.updatePoi(poi);
 
-        this.radius = radius;
-        this.contentInfoWindow = this.poi.getInfoWindow();
-        this.icon = this.poi.getIcon();
-        this.tooltip = this.poi.getTooltip();
-
-        createElements.call(this);
         if (this.markerClusterer) {
             this.markerClusterer.addMarker(this.marker);
         }
@@ -57,13 +50,56 @@
 
     MapOverlay.prototype.updatePoi = function updatePoi(poi) {
         this.poi = poi;
+        this.icon = this.poi.icon;
 
-        this.contentInfoWindow = this.poi.getInfoWindow();
-        this.icon = this.poi.getIcon();
-        this.tooltip = this.poi.getTooltip();
+        // Update Geometry
+        var features = this.map.data.addGeoJson({
+            id: poi.id,
+            type: "Feature",
+            geometry: poi.location
+        });
+        this.feature = features[0];
+        this.feature.setProperty('poi', this.poi);
 
-        updateInfoWindow.call(this);
-        updateMarker.call(this);
+        // Get feature bounds and center
+        var bounds = new google.maps.LatLngBounds();
+        this.feature.getGeometry().forEachLatLng(function (coords) {bounds.extend(coords);});
+        this.bounds = bounds;
+
+        // Update Marker
+        this.marker.setPosition(this.bounds.getCenter());
+        this.marker.setTitle(this.poi.tooltip);
+
+        // Update InfoWindow
+        this.infoWindow.setContent("<h3>" + this.poi.title + "</h3>" + this.poi.infoWindow);
+        this.infoWindow.setPosition(this.bounds.getCenter());
+
+        // Update Style
+        this.style = parseStyle(this.poi.style);
+        if (typeof this.icon === "string") {
+            this.icon = {
+                src: this.icon
+            };
+        }
+        if (this.icon != null && typeof this.icon.src === "string") {
+            if (cache[this.icon.src] == null) {
+                var img = new Image();
+                img.addEventListener("load", function () {
+                    cache[this.icon.src] = new google.maps.Size(img.naturalWidth, img.naturalHeight);
+                    img.markers.forEach(function (marker) {
+                        marker.processMarkerSize();
+                    });
+                }.bind(this));
+                img.src = this.icon.src;
+                img.markers = [this];
+                cache[this.icon.src] = img;
+            } else if (cache[this.icon.src] instanceof google.maps.Size) {
+                this.processMarkerSize();
+            } else {
+                cache[this.icon.src].markers.push(this);
+            }
+        }
+        this.map.data.overrideStyle(this.feature, this.style);
     };
 
     MapOverlay.prototype.setMarkerHandler = function setMarkerHandler(handler) {
@@ -162,73 +198,16 @@
         return newstyle;
     };
 
-    var createElements = function createElements() {
+    var createElements = function createElements(poi) {
 
-        var features = this.map.data.addGeoJson({type: "Feature", geometry: this.poi.getData().location});
-        this.feature = features[0];
-
-        var bounds = new google.maps.LatLngBounds();
-        this.feature.getGeometry().forEachLatLng(function (coords) {bounds.extend(coords);});
-        this.bounds = bounds;
         this.marker = new google.maps.Marker({
             map: this.map,
-            // animation: google.maps.Animation.DROP,
-            position: this.bounds.getCenter(),
-            title: this.tooltip,
             visible: true
         });
 
-        this.infoWindow = new google.maps.InfoWindow({
-            content: "<h3>" + this.poi.poi.title + "</h3>" + this.contentInfoWindow,
-            position: this.bounds.getCenter()
-        });
-        this.feature.setProperty('poi', this.poi);
-
-        this.style = parseStyle(this.poi.poi.style);
-        if (typeof this.icon === "string") {
-            this.icon = {
-                src: this.icon
-            };
-        }
-        if (this.icon != null && typeof this.icon.src === "string") {
-            if (cache[this.icon.src] == null) {
-                var img = new Image();
-                img.addEventListener("load", function () {
-                    cache[this.icon.src] = new google.maps.Size(img.naturalWidth, img.naturalHeight);
-                    img.markers.forEach(function (marker) {
-                        marker.processMarkerSize();
-                    });
-                }.bind(this));
-                img.src = this.icon.src;
-                img.markers = [this];
-                cache[this.icon.src] = img;
-            } else if (cache[this.icon.src] instanceof google.maps.Size) {
-                this.processMarkerSize();
-            } else {
-                cache[this.icon.src].markers.push(this);
-            }
-
-        }
-        this.map.data.overrideStyle(this.feature, this.style);
+        this.infoWindow = new google.maps.InfoWindow();
     };
 
-
-/** **************************** Update ***********************************/
-
-    var updateInfoWindow = function updateInfoWindow() {
-        var googlePosition = new google.maps.LatLng(this.position.lat, this.position.lng);
-        this.infoWindow.setContent(this.contentInfoWindow);
-        this.infoWindow.setPosition(googlePosition);
-    };
-
-    var updateMarker = function updateMarker() {
-        var googlePosition = new google.maps.LatLng(this.position.lat, this.position.lng);
-        this.marker.setMap(null);
-        this.marker.setAnimation(null);
-        this.marker.setPosition(googlePosition);
-        this.marker.setIcon(this.icon);
-        this.marker.setMap(this.map);
-    };
 
 /** ****************************** Others *************************************/
 
