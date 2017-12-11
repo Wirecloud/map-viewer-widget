@@ -115,7 +115,7 @@
         this.directionsDisplay.setMap(this.map);
 
         // Marker Clusterer
-        this.mapPoiManager = new MapPoiManager(this.map, MashupPlatform.prefs.get('radiusPreference'));
+        this.mapPoiManager = new MapPoiManager(this.map);
 
         // Set initial zoom
         this.map.setZoom(parseZoomValue(MashupPlatform.prefs.get("initialZoom"), 3));
@@ -264,9 +264,6 @@
 /** ************************** Preference Handler *****************************/
 
     var handlerPreferences = function handlerPreferences(preferences) {
-        if ('radiusPreference' in preferences && this.mapPoiManager != null) {
-            this.mapPoiManager.updateRadius(preferences.radiusPreference);
-        }
         if ('centerPreference' in preferences) {
             setCenterPreference.call(this, preferences.centerPreference);
         }
@@ -280,23 +277,8 @@
     var handlerClickMarkerPoi = function handlerClickMarkerPoi(poi) {
         if (poi) {
             this.mapPoiManager.selectPoi(poi);
-            MashupPlatform.wiring.pushEvent('poiOutput', JSON.stringify(poi));
+            MashupPlatform.wiring.pushEvent('poiOutput', poi);
         }
-    };
-
-    var handlerClickMarker = function handlerClickMarker(latLng, marker) {
-        var circleOptions = {
-            strokeColor: "#FF0000",
-            strokeOpacity: 0.8,
-            strokeWeight: 2,
-            fillColor: "#FF0000",
-            fillOpacity: 0.10,
-            center: latLng,
-            radius: this.mapPoiManager.default_radius
-        };
-        var circle = new google.maps.Circle(circleOptions);
-        circle.setMap(this.map);
-        google.maps.event.addListenerOnce(marker, "click", deleteCircle.bind(this, latLng, circle, marker));
     };
 
     var handlerChangeViewport = function handlerChangeViewport() {
@@ -314,7 +296,6 @@
     var createMarker = function createMarker(latLng, iconUrl) {
         var marker = setMarker.call(this, latLng, iconUrl);
         marker.setAnimation(google.maps.Animation.DROP);
-        google.maps.event.addListenerOnce(marker, "click", handlerClickMarker.bind(this, latLng, marker));
         this.map.setCenter(latLng);
 
         return marker;
@@ -362,13 +343,6 @@
             zoomvalue = 22;
         }
         return zoomvalue - 1;
-    };
-
-/** ***************************** Deletes *************************************/
-
-    var deleteCircle = function deleteCircle(latLng, circle, marker) {
-        circle.setMap(null);
-        google.maps.event.addListenerOnce(marker, "click", handlerClickMarker.bind(this, latLng, marker));
     };
 
 /** ****************************** Others *************************************/

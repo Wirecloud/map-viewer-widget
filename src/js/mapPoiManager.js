@@ -28,22 +28,12 @@
 /** ******************************* PUBLIC *************************************/
 /** ****************************************************************************/
 
-    var MapPoiManager = function MapPoiManager(map, radius) {
+    var MapPoiManager = function MapPoiManager(map) {
         this.map = map;
         this.markerClusterer = null;    // new MarkerClusterer(map);
 
         this.activePoi = null;  // the active poi.
         this.poiList = {};      // set of poiOverlais.
-
-        this.updateRadius(radius);
-    };
-
-    MapPoiManager.prototype.updateRadius = function updateRadius(radius) {
-        try {
-            this.default_radius = parseFloat(radius, 10);
-        } catch (e) {
-            this.default_radius = 10;
-        }
     };
 
     MapPoiManager.prototype.insertPoi = function insertPoi(poi, handler) {
@@ -84,10 +74,6 @@
 
     MapPoiManager.prototype.getPoiList = function getPoiList() {
         return this.poiList;
-    };
-
-    MapPoiManager.prototype.getStringPoiList = function getPoiList() {
-        return JSON.stringify(this.poiList);
     };
 
 /** ****************************************************************************/
