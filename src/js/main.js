@@ -106,6 +106,10 @@
 
         // Set handler to manage viewport changes:
         google.maps.event.addListener(this.map, "bounds_changed", handlerChangeViewport.bind(this));
+        this.map.data.setStyle({icon: {path: ""}});
+        this.map.data.addListener('click', function (event) {
+            handlerClickMarkerPoi.call(this, event.feature.getProperty('poi'));
+        }.bind(this));
 
         // Bind directions with map:
         this.directionsDisplay.setMap(this.map);
@@ -398,25 +402,13 @@
             return;
         }
 
-        var northBound = bounds.getNorthEast().lat();
-        var eastBound = bounds.getNorthEast().lng();
-        var southBound = bounds.getSouthWest().lat();
-        var westBound = bounds.getSouthWest().lng();
-
-        var coords, condNorth, condSouth, condEast, condWest, poi;
-
         this.currentViewportPoiList = {};
 
         var poiList = this.mapPoiManager.getPoiList();
         for (var poiId in poiList) {
-            poi = poiList[poiId].poi;
-            coords = poi.getDecimalCoords();
+            var poi = poiList[poiId];
 
-            condNorth = coords.lat < northBound;
-            condSouth = coords.lat > southBound;
-            condEast = coords.lng < eastBound;
-            condWest = coords.lng > westBound;
-            if (condNorth && condSouth && condEast && condWest) {
+            if (poi.bounds.intersects(bounds)) {
                 this.currentViewportPoiList[poiId] = poi;
             }
         }

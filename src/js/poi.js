@@ -28,61 +28,26 @@
     /** ***************************************************/
 
     var Poi = function Poi(poi) {
-        this.poi = {
-            id: "",
-            currentLocation: {      // Current Location.
-                system: "",         // geodetic datum system (usually WGS84, it can be UTM)
-                lat: "",            // Latitude in geodetic datum system
-                lng: ""             // Longitude in geodetic datum system
-            },
-            icon: "",
-            tooltip: "",
-            data: {}
-        };
-/*      this.poi = {
-            id: "tec33",
-            currentLocation: {
-                system: "WGS84",
-                lat: "40.123",
-                lng: "-54.1"
-            },
-            icon: "http://example.org/images/image.png",
-            tooltip: "Pending Issues: 0",
-            infoWindow: "<div>some HTML code</div>",
-            data: {}
-        };*/
-        this.coordinates = {
-            utm: {
-                lat: 0,
-                lng: 0
-            },
-            decimal: {
-                lat: 0,
-                lng: 0
-            }
-        };
-
-        this.init(poi);
-    };
-
-    Poi.prototype.init = function init(poi) {
         var lat;
         var lng;
 
         this.poi = poi;
 
-        if (poi.currentLocation && poi.currentLocation.lat && poi.currentLocation.lng) {
+        if (poi.location == null && poi.currentLocation && poi.currentLocation.lat && poi.currentLocation.lng) {
+            // Convert deprecated currentLocation attribute to the new location attribute
             lat = parseFloat(poi.currentLocation.lat);
             lng = parseFloat(poi.currentLocation.lng);
+
+            this.poi.location = {
+                "type": "Point"
+            };
+
             if (poi.currentLocation.system == "UTM") {
-                this.coordinates.utm.lat = lat;
-                this.coordinates.utm.lng = lng;
-                this.coordinates.decimal = utm2decimal(lat, lng);
-            } else if (poi.currentLocation.system == "WGS84" || poi.currentLocation.system === "") {
-                this.coordinates.decimal.lat = lat;
-                this.coordinates.decimal.lng = lng;
-                this.coordinates.utm = decimal2utm(lat, lng);
+                var tmp = utm2decimal(lat, lng);
+                lat = tmp.lat;
+                lng = tmp.lng;
             }
+            this.poi.location.coordinates = [lat, lng];
         }
     };
 
@@ -92,14 +57,6 @@
 
     Poi.prototype.getIcon = function getIcon() {
         return this.poi.icon;
-    };
-
-    Poi.prototype.getUtmCoords = function getUtmCoords() {
-        return this.coordinates.utm;
-    };
-
-    Poi.prototype.getDecimalCoords = function getDecimalCoords() {
-        return this.coordinates.decimal;
     };
 
     Poi.prototype.getTooltip = function getToolTip() {
@@ -134,24 +91,6 @@
         return {
             lat: decimalCoords[0],
             lng: decimalCoords[1]
-        };
-    };
-
-    /*  decimal2utm: Transform decimal coordinates to utm coordinates.
-     *      - Parameters:
-     *          - decLat: Latitude. A number.
-     *          - decLng: Longitude. A number.
-     *      - Return: utm coordinates in latLng object. Example: {lat; 2654, lng: 32123}
-     * */
-    var decimal2utm = function decimal2utm(decLat, decLng) {
-        var coordinates = new Coordinates();
-        var utmCoords = [];
-
-        coordinates.geoDegToUTM(decLat, decLng, false, utmCoords);
-
-        return {
-            lat: utmCoords[0],
-            lng: utmCoords[1]
         };
     };
 

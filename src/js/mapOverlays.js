@@ -24,6 +24,8 @@
 
     "use strict";
 
+    var cache = {};
+
 /** ****************************************************************************/
 /** ******************************* PUBLIC *************************************/
 /** ****************************************************************************/
@@ -39,13 +41,11 @@
         this.overlaysDisplayed = false;
 
         this.poi = poi;
-        this.circle = {};
         this.infoWindow = {};
         this.marker = {};
 
         this.radius = radius;
         this.contentInfoWindow = this.poi.getInfoWindow();
-        this.position = this.poi.getDecimalCoords();
         this.icon = this.poi.getIcon();
         this.tooltip = this.poi.getTooltip();
 
@@ -53,23 +53,15 @@
         if (this.markerClusterer) {
             this.markerClusterer.addMarker(this.marker);
         }
-        this.marker.setMap(this.map);
-    };
-
-    MapOverlay.prototype.updateRadius = function updateRadius(radius) {
-        this.radius = radius;
-        updateCircle.call(this);
     };
 
     MapOverlay.prototype.updatePoi = function updatePoi(poi) {
         this.poi = poi;
 
         this.contentInfoWindow = this.poi.getInfoWindow();
-        this.position = this.poi.getDecimalCoords();
         this.icon = this.poi.getIcon();
         this.tooltip = this.poi.getTooltip();
 
-        updateCircle.call(this);
         updateInfoWindow.call(this);
         updateMarker.call(this);
     };
@@ -80,13 +72,11 @@
     };
 
     MapOverlay.prototype.showOverlays = function showOverlays() {
-        this.circle.setMap(this.map);
         this.infoWindow.open(this.map, this.marker);
         this.overlaysDisplayed = true;
     };
 
     MapOverlay.prototype.hideOverlays = function hideOverlays() {
-        this.circle.setMap(null);
         this.infoWindow.close();
         this.overlaysDisplayed = false;
     };
@@ -104,6 +94,34 @@
         return this.position;
     };
 
+    MapOverlay.prototype.processMarkerSize = function processMarkerSize() {
+        var size = cache[this.icon.src];
+
+        var scaledSize = new google.maps.Size(size.width * this.icon.scale, size.height * this.icon.scale);
+
+        if (this.icon.anchor == null) {
+            this.icon.anchor = [0.5, 0.5];
+        }
+
+        if (this.icon.anchorXUnits !== "pixels") {
+            this.icon.anchor[0] = scaledSize.width * this.icon.anchor[0];
+        }
+        if (this.icon.anchorYUnits !== "pixels") {
+            this.icon.anchor[1] = scaledSize.height * this.icon.anchor[1];
+        }
+
+        var anchor = new google.maps.Point(this.icon.anchor[0], this.icon.anchor[1]);
+        var icon = {
+            anchor: anchor,
+            url: this.icon.src,
+            scaledSize: scaledSize
+        };
+        this.marker.setOptions({
+            anchorPoint: new google.maps.Size(0, -scaledSize.height),
+            icon: icon
+        });
+    };
+
 /** ****************************************************************************/
 /** ******************************* PRIVATE ************************************/
 /** ****************************************************************************/
@@ -111,59 +129,91 @@
 
 /** ********************************* Add **************************************/
 
+    var RGBA_RE = /^rgba\((\d+),\s*(\d+),\s*(\d+),\s*(\d+(?:\.\d+)?)\)$/;
+
+    var parseStyle = function parseStyle(style) {
+        var matches;
+
+        if (style == null) {
+            return {icon: null};
+        }
+
+        var newstyle = {};
+
+        var fillColor = typeof style.fill === "string" ? style.fill : style.fill != null ? style.fill.color : null;
+        if (fillColor != null && (matches = fillColor.match(RGBA_RE))) {
+            newstyle.fillColor = "rgb(" + matches[1] + ', ' + matches[2] + ', ' + matches[3] + ")";
+            newstyle.fillOpacity = parseFloat(matches[4]);
+        } else if (fillColor != null) {
+            newstyle.fillColor = fillColor;
+            newstyle.fillOpacity = 1;
+        }
+
+        var strokeColor = typeof style.stroke === "string" ? style.stroke : style.stroke != null ? style.stroke.color : null;
+        if (strokeColor != null && (matches = strokeColor.match(RGBA_RE))) {
+            newstyle.strokeColor = "rgb(" + matches[1] + ', ' + matches[2] + ', ' + matches[3] + ")";
+            newstyle.strokeOpacity = parseFloat(matches[4]);
+        } else if (strokeColor != null) {
+            newstyle.strokeColor = strokeColor;
+            newstyle.strokeOpacity = 1;
+        }
+        newstyle.strokeWeight = style.stroke.width;
+
+        return newstyle;
+    };
+
     var createElements = function createElements() {
-        var googlePosition = new google.maps.LatLng(this.position.lat, this.position.lng);
-        var options = {
-            "circle": {
-                strokeColor: "#FF0000",
-                strokeOpacity: 0.8,
-                radius: this.radius,
-                center: googlePosition,
-                strokeWeight: 2,
-                fillColor: "#FF0000",
-                fillOpacity: 0.10
-            },
-            "infoWindow": {
-                content: this.contentInfoWindow,
-                position: googlePosition
-            },
-            "marker": {
-                map: this.map,
-                // animation: google.maps.Animation.DROP,
-                position: googlePosition,
-                title: this.tooltip,
-                visible: true
+
+        var features = this.map.data.addGeoJson({type: "Feature", geometry: this.poi.getData().location});
+        this.feature = features[0];
+
+        var bounds = new google.maps.LatLngBounds();
+        this.feature.getGeometry().forEachLatLng(function (coords) {bounds.extend(coords);});
+        this.bounds = bounds;
+        this.marker = new google.maps.Marker({
+            map: this.map,
+            // animation: google.maps.Animation.DROP,
+            position: this.bounds.getCenter(),
+            title: this.tooltip,
+            visible: true
+        });
+
+        this.infoWindow = new google.maps.InfoWindow({
+            content: "<h3>" + this.poi.poi.title + "</h3>" + this.contentInfoWindow,
+            position: this.bounds.getCenter()
+        });
+        this.feature.setProperty('poi', this.poi);
+
+        this.style = parseStyle(this.poi.poi.style);
+        if (typeof this.icon === "string") {
+            this.icon = {
+                src: this.icon
+            };
+        }
+        if (this.icon != null && typeof this.icon.src === "string") {
+            if (cache[this.icon.src] == null) {
+                var img = new Image();
+                img.addEventListener("load", function () {
+                    cache[this.icon.src] = new google.maps.Size(img.naturalWidth, img.naturalHeight);
+                    img.markers.forEach(function (marker) {
+                        marker.processMarkerSize();
+                    });
+                }.bind(this));
+                img.src = this.icon.src;
+                img.markers = [this];
+                cache[this.icon.src] = img;
+            } else if (cache[this.icon.src] instanceof google.maps.Size) {
+                this.processMarkerSize();
+            } else {
+                cache[this.icon.src].markers.push(this);
             }
-        };
 
-        if (this.icon) {
-            var iconSize = new google.maps.Size(40, 40);
-            var markerImage = new google.maps.MarkerImage(this.icon, null, null, null, iconSize);
-            options.marker.icon = markerImage;
         }
-
-        for (var option in options) {
-            createElement.call(this, option, options[option]);
-        }
+        this.map.data.overrideStyle(this.feature, this.style);
     };
 
-    var createElement = function createElement(item, options) {
-        var constructor = {
-            "circle": "Circle",
-            "infoWindow": "InfoWindow",
-            "marker": "Marker"
-        };
-
-        this[item] = new google.maps[constructor[item]](options);
-    };
 
 /** **************************** Update ***********************************/
-
-    var updateCircle = function updateCircle() {
-        var googlePosition = new google.maps.LatLng(this.position.lat, this.position.lng);
-        this.circle.setRadius(this.radius);
-        this.circle.setCenter(googlePosition);
-    };
 
     var updateInfoWindow = function updateInfoWindow() {
         var googlePosition = new google.maps.LatLng(this.position.lat, this.position.lng);

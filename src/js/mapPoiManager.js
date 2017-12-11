@@ -106,7 +106,6 @@
             // update its position.
             this.poiList[poiId].updatePoi(poi);
             this.poiList[poiId].setMarkerHandler(handler);
-        // else:
         } else {
             var mapOverlay = new MapOverlay(this.map,  this.markerClusterer, poi, this.default_radius);
             mapOverlay.setMarkerHandler(handler);
