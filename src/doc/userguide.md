@@ -36,19 +36,41 @@ This widget provides a basic and simple map viewer using the Google Maps API
   of the following fields:
     - **`id`** (required): id used for identifying this PoI. Used in the update
       and delete operations for locating the associated PoI.
-    - `location` (required if `currentLocation` not used): a GeoJSON geometry.
-      e.g. `{"type": "Point", "coordinates": [125.6, 10.1]}`
     - `currentLocation` (deprecated, required if `location` not used):
         - `longitude` (required):
 		- `latitude` (required):
         - `system`: geodetic datum system (usually WGS84, it can be UTM)
-    - `title`: title associated to the PoI
-    - `subtitle`: subtitle associated to the PoI
-    - `infoWindow`: content (using HTML) associated with the PoI.
-    - `tooltip`: text to be displayed as tooltip when the mouse is over the PoI.
     - `data`: Data associated with the point of interest, used by the **PoI
       selected** output endpoint.
-    - `icon`: URL of the icon to use for the marker
+    - `icon`: URL of the icon to use for the marker or an object describing the
+        icon to use. Available options:
+        - `anchor`: Anchor position. Default value is `[0.5, 0.5]` (icon
+          center).
+        - `anchorXUnits`: Units in which the anchor x value is specified. A
+          value of `'fraction'` indicates the x value is a fraction of the
+          icon. A value of `'pixels'` indicates the x value in pixels. Default
+          is `'fraction'`.
+        - `anchorYUnits`: Units in which the anchor y value is specified. A
+          value of `'fraction'` indicates the y value is a fraction of the
+          icon. A value of `'pixels'` indicates the y value in pixels. Default
+          is `'fraction'`.
+        - `opacity`: Opacity of the icon (range from 0 to 1). Default is `1`.
+        - `scale`: Scale. Default is `1`.
+        - `src`: Image source URI.
+    - `infoWindow`: content (using HTML) associated with the PoI.
+    - `location` (required if `currentLocation` not used): a GeoJSON geometry.
+      e.g. `{"type": "Point", "coordinates": [125.6, 10.1]}`
+    - `style`: Style to use for rendering. Supported options:
+        - `fill`:
+            - `color`: fill color. CSS3 color, that is, an hexadecimal, `rgb` or
+            `rgba` color.
+        - `stroke`:
+            - `color`: stroke color. CSS3 color, that is, an hexadecimal, `rgb`
+            or `rgba` color.
+            - `width`: stroke width in pixels.
+    - `subtitle`: subtitle associated to the PoI
+    - `title`: title associated to the PoI
+    - `tooltip`: text to be displayed as tooltip when the mouse is over the PoI.
 - **Insert/Update Centered PoI**: Insert or update a PoI and change the viewport
   centering the map on it. Uses the same format used by the **Insert/Update PoI**
   endpoint.
