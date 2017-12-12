@@ -28,13 +28,9 @@
     /** ***************************************************/
 
     var Poi = function Poi(poi) {
-        var lat;
-        var lng;
-
-        this.poi = poi;
-
         this.id = poi.id;
         this.title = poi.title;
+        this.subtitle = poi.subtitle;
         this.tooltip = poi.tooltip;
         this.icon = poi.icon;
         this.style = poi.style;
@@ -44,8 +40,8 @@
 
         if (this.location == null && poi.currentLocation != null && poi.currentLocation.lat != null && poi.currentLocation.lng != null) {
             // Convert deprecated currentLocation attribute to the new location attribute
-            lat = parseFloat(poi.currentLocation.lat);
-            lng = parseFloat(poi.currentLocation.lng);
+            var lat = parseFloat(poi.currentLocation.lat);
+            var lng = parseFloat(poi.currentLocation.lng);
 
             this.location = {
                 "type": "Point"

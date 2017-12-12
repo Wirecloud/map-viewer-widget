@@ -380,10 +380,10 @@
 
         var poiList = this.mapPoiManager.getPoiList();
         for (var poiId in poiList) {
-            var poi = poiList[poiId];
+            var overlay = poiList[poiId];
 
-            if (poi.bounds.intersects(bounds)) {
-                this.currentViewportPoiList[poiId] = poi;
+            if (overlay.bounds.intersects(bounds)) {
+                this.currentViewportPoiList[poiId] = overlay.poi;
             }
         }
 

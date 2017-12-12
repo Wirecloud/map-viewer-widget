@@ -119,11 +119,13 @@
 
     MapOverlay.prototype.destroy = function destroy() {
         this.hideOverlays();
+
         if (this.markerClusterer) {
             this.markerClusterer.removeMarker(this.marker);
         }
-        this.marker.setMap(null);
 
+        this.map.data.remove(this.feature);
+        this.marker.setMap(null);
     };
 
     MapOverlay.prototype.getPosition = function getPosition() {
