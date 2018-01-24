@@ -1,3 +1,13 @@
+## v2.6.1 (2018-01-xx)
+
+- Added a preference for providing an API Key.
+- Removed unsupported output endpoints:
+    - `URL Route Map`
+    - `Address`
+    - `UTM Coordinates`
+    - `Decimal Coordinates`
+
+
 ## v2.6.0 (2017-12-12)
 
 - Use plain object for sending and receiving data through wiring.
