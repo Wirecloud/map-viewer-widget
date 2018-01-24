@@ -1,6 +1,6 @@
-## v2.6.1 (2018-01-xx)
+## v2.6.1 (2018-01-24)
 
-- Added a preference for providing an API Key.
+- Added a preference for providing an API Key
 - Removed unsupported output endpoints:
     - `URL Route Map`
     - `Address`

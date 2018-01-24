@@ -263,6 +263,11 @@
 /** ************************** Preference Handler *****************************/
 
     var handlerPreferences = function handlerPreferences(preferences) {
+        if ('apiKey' in preferences) {
+            document.location.reload();
+            return;
+        }
+
         if ('centerPreference' in preferences) {
             setCenterPreference.call(this, preferences.centerPreference);
         }
