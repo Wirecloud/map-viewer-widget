@@ -24,10 +24,6 @@
   </preferences>
   <wiring>
     <outputendpoint name="routeDescriptionOutput" type="text" label="Route Description" description="Route description step by step. It may be connected with Route Description widget." friendcode="routeDescription"/>
-    <outputendpoint name="urlRouteMapOutput" type="text" label="URL Route Map" description="URL Route Map" friendcode="url"/>
-    <outputendpoint name="addressOutput" type="text" label="Address" description="Address of a Google Map marker." friendcode="address"/>
-    <outputendpoint name="utmCoordOutput" type="text" label="UTM Coordinates" description="UTM X, Y coordinates that is displayed in the map." friendcode="utmCoord"/>
-    <outputendpoint name="decimalCoordOutput" type="text" label="Decimal Coordinates" description="Decimal X, Y coordinates that is displayed in the map." friendcode="decimalCoord"/>
     <outputendpoint name="poiOutput" type="text" label="PoI selected" description="A PoI has been selected on the map" friendcode="poi"/>
     <outputendpoint name="poiListOutput" type="text" label="PoI visibility change" description="Change PoI list inside the viewport" friendcode="poiList"/>
     <outputendpoint name="boundsOutput" type="text" label="Change Viewport" description="Change bounds of the current viewport." friendcode="viewport"/>
