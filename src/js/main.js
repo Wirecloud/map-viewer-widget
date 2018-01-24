@@ -51,7 +51,6 @@
         this.mapZoom = 11;
         this.preferenceZoom = parseZoomValue(MashupPlatform.prefs.get('zoomPreference'), 13);
 
-        this.currentViewportPoiList = {};
         // this.activeOverlayPoi = null;     // poi that has active overlays
         // this.pois = {};
         /*  this.pois = {
@@ -370,26 +369,29 @@
     };
 
     var sendPoiList = function sendPoiList() {
+
+        if (!MashupPlatform.widget.outputs.poiListOutput.connected) {
+            return;
+        }
+
         var bounds = this.map.getBounds();
 
         if (bounds == null) {
             return;
         }
 
-        this.currentViewportPoiList = {};
+        let currentViewportPoiList = {};
 
         var poiList = this.mapPoiManager.getPoiList();
         for (var poiId in poiList) {
             var overlay = poiList[poiId];
 
             if (overlay.bounds.intersects(bounds)) {
-                this.currentViewportPoiList[poiId] = overlay.poi;
+                currentViewportPoiList[poiId] = overlay.poi;
             }
         }
 
-        if (this.currentViewportPoiList) {
-            MashupPlatform.wiring.pushEvent("poiListOutput", this.currentViewportPoiList);
-        }
+        MashupPlatform.wiring.pushEvent("poiListOutput", currentViewportPoiList);
     };
 
 
