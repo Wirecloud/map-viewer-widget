@@ -18,7 +18,7 @@
  *
  */
 
-/* globals google Poi MashupPlatform Wirecloud console ErrorLayer MapPoiManager*/
+/* globals google Poi MashupPlatform ErrorLayer MapPoiManager */
 /* exported MapViewer*/
 
 (function () {
@@ -66,7 +66,6 @@
         // Google Direction Services:
         this.directionsService = {};
         this.directionsDisplay = {};
-        this.travelMode = google.maps.DirectionsTravelMode.DRIVING; // map type view.
 
         // To manage Step Route:
         this.activeRoute = {
@@ -78,6 +77,7 @@
     MapViewer.prototype.init = function init() {
 
         // Inicialize directions:
+        this.travelMode = google.maps.DirectionsTravelMode.DRIVING; // map type view.
         this.directionsService = new google.maps.DirectionsService();
         this.directionsDisplay = new google.maps.DirectionsRenderer({suppressMarkers: true});
 
@@ -187,7 +187,7 @@
             var latLng = new google.maps.LatLng(lat, lng);
             createMarker.call(this, latLng);
         } else {
-            Wirecloud.widget.log("Input Decimal Coord: wrong params.");
+            MashupPlatform.widget.log("Input Decimal Coord: wrong params.");
         }
     };
 
@@ -417,4 +417,18 @@
 // eslint-disable-next-line
 var mapViewer = new MapViewer("map_canvas");
 
-document.addEventListener("DOMContentLoaded", mapViewer.init.bind(mapViewer), false);
+var init = function init() {
+    "use strict";
+
+    mapViewer.init();
+};
+
+var url = "https://maps.google.com/maps/api/js?callback=" + init.name;
+var api_key = MashupPlatform.prefs.get("apiKey").trim();
+if (api_key != "") {
+    url += "&key=" + encodeURIComponent(api_key);
+}
+var google_api = document.createElement("script");
+google_api.setAttribute("type", "text/javascript");
+google_api.setAttribute("src", url);
+document.head.appendChild(google_api);
