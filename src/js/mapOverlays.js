@@ -1,5 +1,6 @@
 /*
  *     (C) Copyright 2012-2013 CoNWeT Lab., Universidad Politécnica de Madrid
+ *     Copyright (c) 2018 Future Internet Consulting and Development Solutions S.L.
  *
  *     This file is part of the map-viewer widget.
  *
@@ -71,7 +72,17 @@
         this.marker.setTitle(this.poi.tooltip);
 
         // Update InfoWindow
-        this.infoWindow.setContent("<h3>" + this.poi.title + "</h3>" + this.poi.infoWindow);
+        var infoWindow = '';
+        if (this.poi.title != null) {
+            let cleanedtitle = ("" + this.poi.title).trim();
+            if (cleanedtitle != '') {
+                infoWindow = "<h3>" + cleanedtitle + "</h3>";
+            }
+        }
+        if (this.poi.infoWindow != null) {
+            infoWindow += this.poi.infoWindow;
+        }
+        this.infoWindow.setContent(infoWindow);
         this.infoWindow.setPosition(this.bounds.getCenter());
 
         // Update Style

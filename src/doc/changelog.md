@@ -1,3 +1,8 @@
+## v2.6.2 (2018-05-18)
+
+- Fix `undefined` titles on the popovers. See [#6](https://github.com/Wirecloud/map-viewer-widget/issues/6).
+
+
 ## v2.6.1 (2018-01-24)
 
 - Added a preference for providing an API Key
@@ -16,14 +21,17 @@
   for geojson geometries), `style`, `title` and `subtitle`. Extended `icon`
   definition and deprecated `currentLocation` attribute.
 
+
 ## v2.5.8 (2016-12-12)
 
 - Improve initial size configuration
+
 
 ## v2.5.7
 
 - Fixes problems handling the radius and zoom preferences
 - Add license metadata
+
 
 ## v2.5.5
 
